@@ -33,3 +33,4 @@ build/
 .vscode/
 
 **/BudgetBuddyServiceAccountKey.json
+**/application-dev.properties
