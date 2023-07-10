@@ -1,4 +1,4 @@
-package mc.budgetbuddy;
+package chivalrous.budgetbuddy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

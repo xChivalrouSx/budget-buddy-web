@@ -1,12 +1,12 @@
-package mc.budgetbuddy.advice;
+package chivalrous.budgetbuddy.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import mc.budgetbuddy.dto.response.ErrorResponse;
-import mc.budgetbuddy.exception.FirebaseException;
+import chivalrous.budgetbuddy.dto.response.ErrorResponse;
+import chivalrous.budgetbuddy.exception.FirebaseException;
 
 @ControllerAdvice
 public class GeneralControllerAdvice {

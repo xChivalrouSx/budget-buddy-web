@@ -1,4 +1,4 @@
-package mc.budgetbuddy.service.init;
+package chivalrous.budgetbuddy.service.init;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+import chivalrous.budgetbuddy.config.Settings;
+import chivalrous.budgetbuddy.constant.ErrorMessage;
+import chivalrous.budgetbuddy.exception.FirebaseException;
 import lombok.RequiredArgsConstructor;
-import mc.budgetbuddy.config.Settings;
-import mc.budgetbuddy.constant.ErrorMessage;
-import mc.budgetbuddy.exception.FirebaseException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class FirebaseInitialization {
 					.build();
 			FirebaseApp.initializeApp(options);
 		} catch (IOException e) {
-			throw new FirebaseException(ErrorMessage.FIREBASE_CAN_NOT_INITIALIZE);
+			throw new FirebaseException(ErrorMessage.FIREBASE_CAN_NOT_INITIALIZE, e);
 		}
 	}
 }

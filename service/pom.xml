@@ -9,7 +9,7 @@
 		<version>2.1.4.RELEASE</version>
 	</parent>
 
-	<groupId>mc.budget-buddy</groupId>
+	<groupId>chivalrous.budget-buddy</groupId>
 	<artifactId>BudgetBuddyService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BudgetBuddy</name>
@@ -73,6 +73,11 @@
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
 			<version>8.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jxls</groupId>
+			<artifactId>jxls-jexcel</artifactId>
+			<version>1.0.9</version>
 		</dependency>
 	</dependencies>
 

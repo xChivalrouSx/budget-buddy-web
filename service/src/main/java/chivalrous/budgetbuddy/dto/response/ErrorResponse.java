@@ -1,4 +1,4 @@
-package mc.budgetbuddy.dto.response;
+package chivalrous.budgetbuddy.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
