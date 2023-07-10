@@ -18,7 +18,7 @@ public class UserService {
 		userRepository.createUser(User.builder()
 				.id(DigestUtils.md5Hex(userCreateRequestDto.getUsername()).toUpperCase())
 				.username(userCreateRequestDto.getUsername())
-				.password(userCreateRequestDto.getPassword())
+				.password(DigestUtils.md5Hex(userCreateRequestDto.getPassword()).toUpperCase())
 				.build());
 	}
 }
