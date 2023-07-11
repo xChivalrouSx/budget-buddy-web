@@ -6,11 +6,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorMessage {
-	FIREBASE_CAN_NOT_INITIALIZE("101", "Error while connecting to google services."),
+	AUTHENTICATION_ERROR("001", "Authentication error."),
+	AUTHENTICATION_NOT_FOUND("002", "Authentication error."),
+	AUTHENTICATION_NOT_VALID("003", "Authentication token not valid."),
+	USER_COULD_NOT_CREATE("004", "User could not create."),
+	BAD_CREDENTIALS("005", "Username or password not valid."),
+	FIREBASE_COULD_NOT_INITIALIZE("101", "Error while connecting to google services."),
+	FIREBASE_DATA_COULD_NOT_FOUND("102", "Error while getting data."),
 	DATE_CANNOT_PARSE("201", "Improper date format."),
 	FILE_COULD_NOT_READ("301", "Document could not read.");
 
-	private final String message;
 	private final String code;
+	private final String message;
 
 }

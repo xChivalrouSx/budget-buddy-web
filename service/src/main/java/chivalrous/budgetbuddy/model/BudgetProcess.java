@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequestDto;
+import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
 import chivalrous.budgetbuddy.util.DateUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +28,10 @@ public class BudgetProcess {
 	private String period;
 	private int periodInt;
 
-	public static BudgetProcess fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequestDto budgetDocumentImportRequestDto) {
+	public static BudgetProcess fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequest budgetDocumentImportRequest) {
 		BudgetProcess budgetProcess = new BudgetProcess();
-		String periodSeperator = budgetDocumentImportRequestDto.getMonth() < 10 ? "-0" : "-";
-		String period = budgetDocumentImportRequestDto.getYear() + periodSeperator + budgetDocumentImportRequestDto.getMonth();
+		String periodSeperator = budgetDocumentImportRequest.getMonth() < 10 ? "-0" : "-";
+		String period = budgetDocumentImportRequest.getYear() + periodSeperator + budgetDocumentImportRequest.getMonth();
 		int periodInt = Integer.parseInt(period.replace("-", ""));
 
 		budgetProcess.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", excelStringList.get(0)));

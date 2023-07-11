@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import chivalrous.budgetbuddy.constant.ErrorMessage;
-import chivalrous.budgetbuddy.exception.BudgetBuddyServiceException;
+import chivalrous.budgetbuddy.exception.BbServiceException;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DateUtil {
 
 	public static Date stringDateToDate(String date) {
@@ -18,7 +20,7 @@ public class DateUtil {
 			sdf.setLenient(false);
 			return sdf.parse(date);
 		} catch (java.text.ParseException e) {
-			throw new BudgetBuddyServiceException(ErrorMessage.DATE_CANNOT_PARSE, e);
+			throw new BbServiceException(ErrorMessage.DATE_CANNOT_PARSE, e);
 		}
 	}
 

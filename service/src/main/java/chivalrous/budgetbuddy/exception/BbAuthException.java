@@ -3,12 +3,14 @@ package chivalrous.budgetbuddy.exception;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public class BudgetBuddyServiceException extends RuntimeException {
+@RequiredArgsConstructor
+public class BbAuthException extends RuntimeException {
 
 	private final ErrorMessage error;
-	private final Exception exception;
+	private Exception exception;
 
 }

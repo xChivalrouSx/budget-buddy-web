@@ -1,4 +1,4 @@
-package mc.budgetbuddy;
+package chivalrous.budgetbuddy;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

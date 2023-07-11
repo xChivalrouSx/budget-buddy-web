@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import chivalrous.budgetbuddy.constant.ErrorMessage;
-import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequestDto;
-import chivalrous.budgetbuddy.exception.BudgetBuddyServiceException;
+import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
+import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.model.BudgetProcess;
 import chivalrous.budgetbuddy.repository.BudgetDocumentRepository;
 import jxl.Sheet;
@@ -23,10 +23,10 @@ public class BudgetDocumentService {
 
 	private final BudgetDocumentRepository budgetDocumentRepository;
 
-	public void getBudgetFromFile(BudgetDocumentImportRequestDto budgetDocumentImportRequestDto) {
+	public void getBudgetFromFile(BudgetDocumentImportRequest budgetDocumentImportRequest) {
 		try {
 			Map<Integer, List<String>> data = new HashMap<>();
-			Workbook workbook = Workbook.getWorkbook(budgetDocumentImportRequestDto.getFile().getInputStream());
+			Workbook workbook = Workbook.getWorkbook(budgetDocumentImportRequest.getFile().getInputStream());
 			Sheet sheet = workbook.getSheet(0);
 
 			int rows = sheet.getRows();
@@ -41,12 +41,12 @@ public class BudgetDocumentService {
 
 			data.values().removeIf(x -> x.get(0).equals("") && x.get(1).equals(""));
 			List<BudgetProcess> budgetData = data.values().stream()
-					.map(x -> BudgetProcess.fromWorldCardExcelStringList(x, budgetDocumentImportRequestDto))
+					.map(x -> BudgetProcess.fromWorldCardExcelStringList(x, budgetDocumentImportRequest))
 					.collect(Collectors.toList());
 
 			budgetDocumentRepository.saveBudgets(budgetData);
 		} catch (Exception e) {
-			throw new BudgetBuddyServiceException(ErrorMessage.FILE_COULD_NOT_READ, e);
+			throw new BbServiceException(ErrorMessage.FILE_COULD_NOT_READ, e);
 		}
 
 	}

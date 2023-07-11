@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BudgetDocumentImportRequestDto {
+public class BudgetDocumentImportRequest {
 
 	private MultipartFile file;
 	private int year;
