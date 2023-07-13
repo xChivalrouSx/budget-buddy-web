@@ -4,6 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import chivalrous.budgetbuddy.config.Settings;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.dto.request.UserCreateRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
@@ -15,10 +16,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final Settings settings;
 
 	public void createUser(UserCreateRequest userCreateRequest) {
+		if (!settings.isUserCreationEnabled()) {
+			throw new BbServiceException(ErrorMessage.USER_CREATION_DISABLE);
+		}
 		if (getUser(userCreateRequest.getUsername()) != null) {
 			throw new BbServiceException(ErrorMessage.USER_COULD_NOT_CREATE);
 		}

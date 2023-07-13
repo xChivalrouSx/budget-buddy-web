@@ -12,4 +12,6 @@ public class Settings {
 	@Value("${chivalrous.budgetbuddy.firebase.account-key-path}")
 	private String firebaseAccountKeyPath;
 
+	@Value("${chivalrous.budgetbuddy.user.enable-create-user}")
+	private boolean isUserCreationEnabled;
 }

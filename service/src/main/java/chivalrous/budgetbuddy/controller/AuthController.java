@@ -1,5 +1,6 @@
 package chivalrous.budgetbuddy.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +20,9 @@ public class AuthController {
 	private final AuthenticationManager authenticationManager;
 
 	@PostMapping("/authenticate")
-	public AuthResponse authenticateUserAndGetToken(@RequestBody AuthRequest authRequest) {
+	public ResponseEntity<AuthResponse> authenticateUserAndGetToken(@RequestBody AuthRequest authRequest) {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-		return new AuthResponse(authRequest.getUsername(), jwtTokenManager.generateToken(authRequest.getUsername()));
+		return ResponseEntity.ok().body(new AuthResponse(authRequest.getUsername(), jwtTokenManager.generateToken(authRequest.getUsername())));
 	}
 
 }
