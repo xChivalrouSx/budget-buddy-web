@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import chivalrous.budgetbuddy.config.Settings;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.dto.request.UserCreateRequest;
-import chivalrous.budgetbuddy.exception.BbServiceException;
+import chivalrous.budgetbuddy.exception.BbAuthException;
+import chivalrous.budgetbuddy.exception.BbUserCouldNotCreate;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class UserService {
 
 	public void createUser(UserCreateRequest userCreateRequest) {
 		if (!settings.isUserCreationEnabled()) {
-			throw new BbServiceException(ErrorMessage.USER_CREATION_DISABLE);
+			throw new BbAuthException(ErrorMessage.USER_CREATION_DISABLE);
 		}
 		if (getUser(userCreateRequest.getUsername()) != null) {
-			throw new BbServiceException(ErrorMessage.USER_COULD_NOT_CREATE);
+			throw new BbUserCouldNotCreate(ErrorMessage.USER_COULD_NOT_CREATE);
 		}
 
 		userRepository.createUser(User.builder()
