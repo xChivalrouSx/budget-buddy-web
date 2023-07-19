@@ -1,6 +1,7 @@
 package chivalrous.budgetbuddy.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,10 @@ public class UserService {
 
 	public User getUser(String username) {
 		return userRepository.getUser(username);
+	}
+
+	public User getAuthenticatedUser() {
+		return userRepository.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 }

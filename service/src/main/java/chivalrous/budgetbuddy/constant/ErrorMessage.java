@@ -18,7 +18,9 @@ public enum ErrorMessage {
 	FIREBASE_DATA_COULD_NOT_FOUND("102", "Error while getting data."),
 	DATE_CANNOT_PARSE("201", "Improper date format."),
 	FILE_COULD_NOT_READ("301", "Document could not read."),
-	DOCUMENT_FORMAT_NOT_VALID("302", "Document format not valid.");
+	DOCUMENT_FORMAT_NOT_VALID("302", "Document format not valid."),
+	INVALID_YEAR("303", "Year is not valid."),
+	INVALID_MONTH("304", "Month is not valid.");
 
 	private final String code;
 	private final String message;

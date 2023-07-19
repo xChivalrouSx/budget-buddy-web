@@ -7,17 +7,17 @@ import org.springframework.stereotype.Repository;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 
-import chivalrous.budgetbuddy.model.BudgetProcess;
+import chivalrous.budgetbuddy.constant.BbCollection;
+import chivalrous.budgetbuddy.model.Budget;
 
 @Repository
 public class BudgetDocumentRepository {
 
-	private static final String BUDGET_COLLECTION = "budget";
-
-	public void saveBudgets(List<BudgetProcess> budgets) {
+	public void saveBudgets(List<Budget> budgets) {
 		Firestore db = FirestoreClient.getFirestore();
-		for (BudgetProcess budgetProcess : budgets) {
-			db.collection(BUDGET_COLLECTION).document(budgetProcess.getId()).set(budgetProcess);
+		for (Budget budgetProcess : budgets) {
+			db.collection(BbCollection.BUDGET.getName()).document(budgetProcess.getId()).set(budgetProcess);
 		}
 	}
+
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.dto.response.ErrorResponse;
 import chivalrous.budgetbuddy.exception.BbAuthException;
+import chivalrous.budgetbuddy.exception.BbBadRequestException;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.exception.BbUserCouldNotCreate;
 import chivalrous.budgetbuddy.exception.FirebaseException;
@@ -71,6 +72,13 @@ public class GeneralControllerAdvice {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponseModel = new ErrorResponse(exception.getError().getMessage(), exception.getError().getCode());
 		return new ResponseEntity<>(errorResponseModel, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = BbBadRequestException.class)
+	public ResponseEntity<ErrorResponse> handleException(BbBadRequestException exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponseModel = new ErrorResponse(exception.getError().getMessage(), exception.getError().getCode());
+		return new ResponseEntity<>(errorResponseModel, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = BbUserCouldNotCreate.class)

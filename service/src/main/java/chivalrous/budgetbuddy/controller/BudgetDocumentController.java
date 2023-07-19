@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
 import chivalrous.budgetbuddy.dto.response.SuccessResponse;
 import chivalrous.budgetbuddy.service.BudgetDocumentService;
+import chivalrous.budgetbuddy.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -16,8 +17,9 @@ public class BudgetDocumentController {
 
 	private final BudgetDocumentService budgetDocumentService;
 
-	@PostMapping("/budget-process/import")
+	@PostMapping("/budget-document/import")
 	public ResponseEntity<SuccessResponse> getBudgetFromFile(@ModelAttribute BudgetDocumentImportRequest budgetDocumentImportRequest) {
+		DateUtil.checkYearAndMonthForPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
 		budgetDocumentService.getBudgetFromFile(budgetDocumentImportRequest);
 		return ResponseEntity.ok().body(new SuccessResponse("All data imported."));
 	}

@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
-import chivalrous.budgetbuddy.model.BudgetProcess;
+import chivalrous.budgetbuddy.model.Budget;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.BudgetDocumentRepository;
 import jxl.Sheet;
@@ -57,10 +56,10 @@ public class BudgetDocumentService {
 			}
 			workbook.close();
 
-			User currentUser = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
+			User currentUser = userService.getAuthenticatedUser();
 			data.values().removeIf(x -> x.get(0).equals("") && x.get(1).equals(""));
-			List<BudgetProcess> budgetData = data.values().stream()
-					.map(x -> BudgetProcess.fromWorldCardExcelStringList(x, budgetDocumentImportRequest, currentUser))
+			List<Budget> budgetData = data.values().stream()
+					.map(x -> Budget.fromWorldCardExcelStringList(x, budgetDocumentImportRequest, currentUser))
 					.collect(Collectors.toList());
 
 			budgetDocumentRepository.saveBudgets(budgetData);

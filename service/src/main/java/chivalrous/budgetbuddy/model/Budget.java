@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BudgetProcess {
+public class Budget {
 
 	private String id;
 	private String userId;
@@ -35,17 +35,14 @@ public class BudgetProcess {
 	private String period;
 	private int periodInt;
 
-	public static BudgetProcess fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
-		BudgetProcess budgetProcess = new BudgetProcess();
-		String periodSeperator = budgetDocumentImportRequest.getMonth() < 10 ? "-0" : "-";
-		String period = budgetDocumentImportRequest.getYear() + periodSeperator + budgetDocumentImportRequest.getMonth();
-		int periodInt = Integer.parseInt(period.replace("-", ""));
+	public static Budget fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
+		Budget budget = new Budget();
 
 		if (excelStringList.get(0).trim().equals("-")) {
-			budgetProcess.setDate(
+			budget.setDate(
 					DateUtil.stringDateToDate("dd/MM/yyyy", "05/" + budgetDocumentImportRequest.getMonth() + "/" + budgetDocumentImportRequest.getYear()));
 		} else {
-			budgetProcess.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", excelStringList.get(0)));
+			budget.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", excelStringList.get(0)));
 		}
 
 		boolean isReturn = false;
@@ -63,43 +60,46 @@ public class BudgetProcess {
 		Pattern regexPattern = Pattern.compile(RegexPattern.BUDGET_STORE_TYPE.getPattern());
 		Matcher regexMatcher = regexPattern.matcher(excelStringList.get(1));
 		if (regexMatcher.find()) {
-			budgetProcess.setStoreName(regexMatcher.group(1));
-			budgetProcess.setTotalInstallment(Integer.parseInt(regexMatcher.group(8)));
-			budgetProcess.setPaidInstallment(Integer.parseInt(regexMatcher.group(7)));
-			budgetProcess.setRemainingInstallment(budgetProcess.getTotalInstallment() - budgetProcess.getPaidInstallment());
-			budgetProcess.setPrice(clearStringAndParseDouble(regexMatcher.group(2), ",", "."));
+			budget.setStoreName(regexMatcher.group(1));
+			budget.setTotalInstallment(Integer.parseInt(regexMatcher.group(8)));
+			budget.setPaidInstallment(Integer.parseInt(regexMatcher.group(7)));
+			budget.setRemainingInstallment(budget.getTotalInstallment() - budget.getPaidInstallment());
+			budget.setPrice(clearStringAndParseDouble(regexMatcher.group(2), ",", "."));
 		} else {
-			budgetProcess.setStoreName(excelStringList.get(1));
-			budgetProcess.setTotalInstallment(1);
-			budgetProcess.setPaidInstallment(1);
-			budgetProcess.setRemainingInstallment(0);
-			budgetProcess.setPrice(priceField);
+			budget.setStoreName(excelStringList.get(1));
+			budget.setTotalInstallment(1);
+			budget.setPaidInstallment(1);
+			budget.setRemainingInstallment(0);
+			budget.setPrice(priceField);
 		}
 
-		budgetProcess.setStoreType(excelStringList.get(2));
-		budgetProcess.setPriceForInstallment(priceField);
+		budget.setStoreType(excelStringList.get(2));
+		budget.setPriceForInstallment(priceField);
 
 		if (excelStringList.size() == 7) {
-			budgetProcess.setCardType(excelStringList.get(4).startsWith("Dijital") ? "Dijital Kart" : "Fiziksel Kart");
-			budgetProcess.setGiftPoint(excelStringList.get(5).equals("-")
+			budget.setCardType(excelStringList.get(4).startsWith("Dijital") ? "Dijital Kart" : "Fiziksel Kart");
+			budget.setGiftPoint(excelStringList.get(5).equals("-")
 					? 0.0
-					: BudgetProcess.clearStringAndParseDouble(excelStringList.get(5), ".", ""));
+					: Budget.clearStringAndParseDouble(excelStringList.get(5), ".", ""));
 		} else if (excelStringList.size() == 8) {
-			budgetProcess.setCardType(excelStringList.get(5).startsWith("Dijital") ? "Dijital Kart" : "Fiziksel Kart");
-			budgetProcess.setGiftPoint(excelStringList.get(6).equals("-")
+			budget.setCardType(excelStringList.get(5).startsWith("Dijital") ? "Dijital Kart" : "Fiziksel Kart");
+			budget.setGiftPoint(excelStringList.get(6).equals("-")
 					? 0.0
-					: BudgetProcess.clearStringAndParseDouble(excelStringList.get(6), ".", ""));
+					: Budget.clearStringAndParseDouble(excelStringList.get(6), ".", ""));
 		} else {
 			throw new BbServiceException(ErrorMessage.DOCUMENT_FORMAT_NOT_VALID);
 		}
 
-		budgetProcess.setPeriod(period);
-		budgetProcess.setPeriodInt(periodInt);
-		String textForId = budgetProcess.getPeriodInt() + budgetProcess.getDate().toString() + budgetProcess.getStoreName() + budgetProcess.getPrice();
-		budgetProcess.setId(DigestUtils.md5Hex(textForId).toUpperCase());
-		budgetProcess.setUserId(user.getId());
+		String period = DateUtil.getBudgetPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
+		budget.setPeriod(period);
+		int periodInt = DateUtil.getBudgetPeriodAsInt(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
+		budget.setPeriodInt(periodInt);
 
-		return budgetProcess;
+		String textForId = budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
+		budget.setId(DigestUtils.md5Hex(textForId).toUpperCase());
+		budget.setUserId(user.getId());
+
+		return budget;
 	}
 
 	private static Double clearStringAndParseDouble(String value, String replaceValue, String replacementValue) {

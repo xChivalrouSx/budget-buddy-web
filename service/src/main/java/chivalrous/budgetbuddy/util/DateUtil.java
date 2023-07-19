@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import chivalrous.budgetbuddy.constant.ErrorMessage;
+import chivalrous.budgetbuddy.exception.BbBadRequestException;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,23 @@ public class DateUtil {
 		} catch (java.text.ParseException e) {
 			throw new BbServiceException(ErrorMessage.DATE_CANNOT_PARSE, e);
 		}
+	}
+
+	public static void checkYearAndMonthForPeriod(int year, int month) {
+		if (year < 2000 || year > 9999) {
+			throw new BbBadRequestException(ErrorMessage.INVALID_YEAR);
+		}
+		if (month < 1 || month > 12) {
+			throw new BbBadRequestException(ErrorMessage.INVALID_MONTH);
+		}
+	}
+
+	public static String getBudgetPeriod(int year, int month) {
+		return String.format("%d-%02d", year, month);
+	}
+
+	public static int getBudgetPeriodAsInt(int year, int month) {
+		return Integer.parseInt(getBudgetPeriod(year, month).replace("-", ""));
 	}
 
 }
