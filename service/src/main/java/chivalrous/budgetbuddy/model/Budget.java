@@ -51,7 +51,13 @@ public class Budget {
 		Matcher regexMatcherForPrice = regexPatternForPrice.matcher(excelStringList.get(3));
 		if (regexMatcherForPrice.find()) {
 			isReturn = !regexMatcherForPrice.group(1).equals("");
-			priceField = clearStringAndParseDouble(regexMatcherForPrice.group(2).replace(".", ""), ",", ".");
+			if (excelStringList.size() == 7) {
+				priceField = clearStringAndParseDouble(regexMatcherForPrice.group(2).replace(".", ""), ",", ".");
+			} else if (excelStringList.size() == 8) {
+				priceField = clearStringAndParseDouble(regexMatcherForPrice.group(2), ",", "");
+			} else {
+				throw new BbServiceException(ErrorMessage.DOCUMENT_FORMAT_NOT_VALID);
+			}
 			priceField = isReturn ? priceField * -1 : priceField;
 		} else {
 			throw new BbServiceException(ErrorMessage.DOCUMENT_FORMAT_NOT_VALID);
