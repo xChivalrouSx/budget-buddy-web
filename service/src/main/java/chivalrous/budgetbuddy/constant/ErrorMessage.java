@@ -20,7 +20,8 @@ public enum ErrorMessage {
 	FILE_COULD_NOT_READ("301", "Document could not read."),
 	DOCUMENT_FORMAT_NOT_VALID("302", "Document format not valid."),
 	INVALID_YEAR("303", "Year is not valid."),
-	INVALID_MONTH("304", "Month is not valid.");
+	INVALID_MONTH("304", "Month is not valid."),
+	BUDGET_BANK_NOT_FOUND("305", "Bank document not supported."),;
 
 	private final String code;
 	private final String message;

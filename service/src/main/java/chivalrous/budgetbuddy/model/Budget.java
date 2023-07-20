@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import chivalrous.budgetbuddy.constant.BudgetBank;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.constant.RegexPattern;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
@@ -34,6 +35,7 @@ public class Budget {
 	private List<String> tags;
 	private String period;
 	private int periodInt;
+	private String bank;
 
 	public static Budget fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
@@ -104,6 +106,7 @@ public class Budget {
 		String textForId = budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
 		budget.setId(DigestUtils.md5Hex(textForId).toUpperCase());
 		budget.setUserId(user.getId());
+		budget.setBank(BudgetBank.getBudgetBankFromType(budgetDocumentImportRequest.getBank()).getName());
 
 		return budget;
 	}

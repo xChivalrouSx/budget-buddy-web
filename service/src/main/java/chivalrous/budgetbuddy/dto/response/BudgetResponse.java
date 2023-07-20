@@ -25,6 +25,7 @@ public class BudgetResponse {
 	private List<String> tags;
 	private String period;
 	private int periodInt;
+	private String bank;
 
 	public static BudgetResponse fromBudget(Budget budget) {
 		return BudgetResponse.builder()
@@ -42,6 +43,7 @@ public class BudgetResponse {
 				.tags(budget.getTags())
 				.period(budget.getPeriod())
 				.periodInt(budget.getPeriodInt())
+				.bank(budget.getBank())
 				.build();
 	}
 }

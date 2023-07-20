@@ -12,6 +12,7 @@ import lombok.Setter;
 public class BudgetDocumentImportRequest {
 
 	private MultipartFile file;
+	private String bank;
 	private int year;
 	private int month;
 
