@@ -26,7 +26,7 @@ public class BudgetRepository {
 			return future.get().getDocuments().stream().map(p -> p.toObject(Budget.class)).collect(Collectors.toList());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_FOUND, e);
+			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_GET, e);
 		}
 	}
 

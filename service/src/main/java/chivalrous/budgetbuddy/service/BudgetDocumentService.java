@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.model.Budget;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.BudgetDocumentRepository;
+import chivalrous.budgetbuddy.util.DateUtil;
 import jxl.Sheet;
 import jxl.Workbook;
 import lombok.AllArgsConstructor;
@@ -58,10 +58,15 @@ public class BudgetDocumentService {
 
 			User currentUser = userService.getAuthenticatedUser();
 			data.values().removeIf(x -> x.get(0).equals("") && x.get(1).equals(""));
-			List<Budget> budgetData = data.values().stream()
-					.map(x -> Budget.fromWorldCardExcelStringList(x, budgetDocumentImportRequest, currentUser))
-					.collect(Collectors.toList());
 
+			int index = 0;
+			List<Budget> budgetData = new ArrayList<>();
+			for (List<String> dataItems : data.values()) {
+				budgetData.add(Budget.fromWorldCardExcelStringList(index++, dataItems, budgetDocumentImportRequest, currentUser));
+			}
+
+			budgetDocumentRepository.deleteBudgetsWithPeriod(DateUtil.getBudgetPeriod(
+					budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth()));
 			budgetDocumentRepository.saveBudgets(budgetData);
 		} catch (Exception e) {
 			throw new BbServiceException(ErrorMessage.FILE_COULD_NOT_READ, e);

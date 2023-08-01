@@ -15,13 +15,15 @@ public enum ErrorMessage {
 	BAD_CREDENTIALS("006", "Username or password not valid."),
 	SESSION_EXPIRED("007", "Session expired."),
 	FIREBASE_COULD_NOT_INITIALIZE("101", "Error while connecting to google services."),
-	FIREBASE_DATA_COULD_NOT_FOUND("102", "Error while getting data."),
+	FIREBASE_DATA_COULD_NOT_GET("102", "Error while getting data."),
+	FIREBASE_DATA_COULD_NOT_DELETE("103", "Error while deleting data."),
 	DATE_CANNOT_PARSE("201", "Improper date format."),
 	FILE_COULD_NOT_READ("301", "Document could not read."),
 	DOCUMENT_FORMAT_NOT_VALID("302", "Document format not valid."),
 	INVALID_YEAR("303", "Year is not valid."),
 	INVALID_MONTH("304", "Month is not valid."),
-	BUDGET_BANK_NOT_FOUND("305", "Bank document not supported."),;
+	INVALID_DECIMAL_FORMAT("305", "Decimal format is not valid."),
+	BUDGET_BANK_NOT_FOUND("306", "Bank document not supported.");
 
 	private final String code;
 	private final String message;

@@ -37,7 +37,8 @@ public class Budget {
 	private int periodInt;
 	private String bank;
 
-	public static Budget fromWorldCardExcelStringList(List<String> excelStringList, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
+	public static Budget fromWorldCardExcelStringList(int index, List<String> excelStringList,
+			BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
 
 		if (excelStringList.get(0).trim().equals("-")) {
@@ -103,7 +104,7 @@ public class Budget {
 		int periodInt = DateUtil.getBudgetPeriodAsInt(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
 		budget.setPeriodInt(periodInt);
 
-		String textForId = budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
+		String textForId = index + "-" + budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
 		budget.setId(DigestUtils.md5Hex(textForId).toUpperCase());
 		budget.setUserId(user.getId());
 		budget.setBank(BudgetBank.getBudgetBankFromType(budgetDocumentImportRequest.getBank()).getName());
