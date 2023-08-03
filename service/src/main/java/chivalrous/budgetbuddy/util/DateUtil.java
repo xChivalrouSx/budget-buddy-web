@@ -38,14 +38,20 @@ public class DateUtil {
 		return String.format("%d-%02d", year, month);
 	}
 
+	public static int getBudgetPeriodAsInt(int year, int month) {
+		return Integer.parseInt(getBudgetPeriod(year, month).replace("-", ""));
+	}
+
 	public static String getPreviousBudgetPeriod(int year, int month) {
 		int previousMonth = month == 1 ? 12 : month - 1;
 		int previousYear = month == 1 ? year - 1 : year;
 		return String.format("%d-%02d", previousYear, previousMonth);
 	}
 
-	public static int getBudgetPeriodAsInt(int year, int month) {
-		return Integer.parseInt(getBudgetPeriod(year, month).replace("-", ""));
+	public static String getPreviousBudgetPeriod(String period) {
+		int year = Integer.parseInt(period.split("-")[0]);
+		int month = Integer.parseInt(period.split("-")[1]);
+		return getPreviousBudgetPeriod(year, month);
 	}
 
 }

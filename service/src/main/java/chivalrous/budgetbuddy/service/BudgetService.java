@@ -1,5 +1,6 @@
 package chivalrous.budgetbuddy.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import chivalrous.budgetbuddy.dto.response.BudgetSummaryResponse;
 import chivalrous.budgetbuddy.model.Budget;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.BudgetRepository;
+import chivalrous.budgetbuddy.util.DateUtil;
 import chivalrous.budgetbuddy.util.PriceUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +30,28 @@ public class BudgetService {
 	public BudgetSummaryResponse getBudgetSummaryByPeriod(String period) {
 		User user = userService.getAuthenticatedUser();
 		List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(period, user.getId());
+		return calculateSummary(currentPeriodBudgets, period);
+	}
 
+	public List<BudgetSummaryResponse> getAllBudgetSummary() {
+		User user = userService.getAuthenticatedUser();
+		List<BudgetSummaryResponse> budgetSummaryList = new ArrayList<>();
+
+		String period = budgetRepository.getMaxBudgetPeriod(user.getId());
+		boolean shouldContinue = !period.isEmpty();
+		while (shouldContinue) {
+			List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(period, user.getId());
+			if (currentPeriodBudgets.isEmpty()) {
+				break;
+			}
+			budgetSummaryList.add(calculateSummary(currentPeriodBudgets, period));
+			period = DateUtil.getPreviousBudgetPeriod(period);
+		}
+
+		return budgetSummaryList;
+	}
+
+	private BudgetSummaryResponse calculateSummary(List<Budget> currentPeriodBudgets, String period) {
 		Double totalPrice = currentPeriodBudgets.stream()
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();

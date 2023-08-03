@@ -38,4 +38,10 @@ public class BudgetController {
 		return ResponseEntity.ok().body(budgetSummaryResponse);
 	}
 
+	@GetMapping("/budget-summary-all")
+	public ResponseEntity<List<BudgetSummaryResponse>> getAllBudgetSummary() {
+		List<BudgetSummaryResponse> budgetSummaryListResponse = budgetService.getAllBudgetSummary();
+		return ResponseEntity.ok().body(budgetSummaryListResponse);
+	}
+
 }
