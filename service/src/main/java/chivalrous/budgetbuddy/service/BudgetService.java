@@ -2,10 +2,13 @@ package chivalrous.budgetbuddy.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import chivalrous.budgetbuddy.dto.response.BudgetDetailResponse;
+import chivalrous.budgetbuddy.dto.response.BudgetGroupStoreTypeResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetSummaryResponse;
 import chivalrous.budgetbuddy.model.Budget;
@@ -81,4 +84,21 @@ public class BudgetService {
 				PriceUtil.formatPrice(totalPriceStartingInstallment));
 	}
 
+	public BudgetDetailResponse getBudgetDetailByPeriod(String period) {
+		User user = userService.getAuthenticatedUser();
+		List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(period, user.getId());
+		return calculateDetail(currentPeriodBudgets, period);
+	}
+
+	private BudgetDetailResponse calculateDetail(List<Budget> currentPeriodBudgets, String period) {
+		Map<String, Double> mapForStoreTypeTotalPrice = currentPeriodBudgets.stream()
+				.collect(Collectors.groupingBy(Budget::getStoreType, Collectors.summingDouble(Budget::getPriceForInstallment)));
+
+		BudgetDetailResponse budgetDetailResponse = new BudgetDetailResponse();
+		budgetDetailResponse.setPriceAsBudgetStoreType(new ArrayList<>());
+		for (Map.Entry<String, Double> entry : mapForStoreTypeTotalPrice.entrySet()) {
+			budgetDetailResponse.getPriceAsBudgetStoreType().add(new BudgetGroupStoreTypeResponse(entry.getKey(), PriceUtil.formatPrice(entry.getValue())));
+		}
+		return budgetDetailResponse;
+	}
 }

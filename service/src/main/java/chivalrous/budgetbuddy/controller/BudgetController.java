@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import chivalrous.budgetbuddy.dto.request.BudgetsRequest;
+import chivalrous.budgetbuddy.dto.response.BudgetDetailResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetSummaryResponse;
 import chivalrous.budgetbuddy.service.BudgetService;
@@ -42,6 +43,15 @@ public class BudgetController {
 	public ResponseEntity<List<BudgetSummaryResponse>> getAllBudgetSummary() {
 		List<BudgetSummaryResponse> budgetSummaryListResponse = budgetService.getAllBudgetSummary();
 		return ResponseEntity.ok().body(budgetSummaryListResponse);
+	}
+
+	@GetMapping("/budget-detail")
+	public ResponseEntity<BudgetDetailResponse> getBudgetDetailByPeriod(@RequestBody BudgetsRequest budgetsRequest) {
+		DateUtil.checkYearAndMonthForPeriod(budgetsRequest.getYear(), budgetsRequest.getMonth());
+
+		String period = DateUtil.getBudgetPeriod(budgetsRequest.getYear(), budgetsRequest.getMonth());
+		BudgetDetailResponse budgetSummaryResponse = budgetService.getBudgetDetailByPeriod(period);
+		return ResponseEntity.ok().body(budgetSummaryResponse);
 	}
 
 }
