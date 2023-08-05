@@ -2,7 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/Route/PrivateRoute";
 import PublicRoute from "./components/Route/PublicRoute";
 import Layout from "./hoc/Layout";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import LoginPage from "./pages/LoginPage";
+import SummaryPage from "./pages/SummaryPage";
 
 const App = () => {
 	let routes = (
@@ -11,7 +12,7 @@ const App = () => {
 				<Route path="/login" element={<LoginPage />} />
 			</Route>
 			<Route path="/" element={<PrivateRoute />}>
-				<Route path="/" element={<div>MAIN PAGE</div>} />
+				<Route path="/" element={<SummaryPage />} />
 				<Route path="*" element={<Navigate replace to={"/"} />} />
 			</Route>
 		</Routes>
