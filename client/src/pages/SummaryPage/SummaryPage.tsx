@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ButtonBb from "../../components/ButtonBb";
 import TableBb from "../../components/TableBb";
 import { TableBbColumn } from "../../components/TableBb/TableBbObjects";
 import { BudgetSummaryResponse } from "../../dto/response/BudgetSummaryResponse";
@@ -6,14 +8,16 @@ import api from "../../utils/Api";
 import { formatCurrencyAsTR } from "../../utils/PriceFunctions";
 
 const titleValue: string[] = [
-	"Toplam",
-	"Taksitsiz Toplam",
-	"Taksitli Toplam",
-	"Biten Taksitli Toplam",
-	"Eklenen Taksitli Toplam",
+	"Total (Toplam)",
+	"Total Price Without Installment (Taksitsiz Toplam)",
+	"Total Price With Installment (Taksitli Toplam)",
+	"Total Price Ending Installment (Biten Taksitli Toplam)",
+	"Total Price Starting Installment (Eklenen Taksitli Toplam)",
 ];
 
 const SummaryPage = () => {
+	const navigate = useNavigate();
+
 	const [budgetSummaries, setBudgetSummaries] = useState<
 		BudgetSummaryResponse[]
 	>([]);
@@ -26,22 +30,20 @@ const SummaryPage = () => {
 		);
 	}, []);
 
+	const btnDetailClick = (period: string) => {
+		navigate("/budget-detail/" + period);
+	};
+
 	return (
-		<>
+		<div className="grid">
 			{budgetSummaries?.map((budgetSummary: BudgetSummaryResponse) => {
-				console.log(budgetSummary);
 				return (
-					<div
-						key={"main-grid-for-" + budgetSummary.period}
-						className="grid p-3"
-					>
-						<div
-							key={"row-cell" + budgetSummary.period}
-							className="col-6 col-offset-3 card bg-gray-900 p-4"
-						>
+					<div key={"row-cell" + budgetSummary.period} className="col-6">
+						<div className="bg-gray-900 w-12 p-3 inline-flex align-items-end">
 							<TableBb
 								key={"summary-table-for-" + budgetSummary.period}
-								clasName="w-9"
+								clasName="w-10"
+								rowClassName="h-3rem"
 								columns={
 									[
 										{
@@ -52,7 +54,7 @@ const SummaryPage = () => {
 										},
 										{
 											dataField: "priceValue",
-											header: "Tutar",
+											header: "Price (Tutar)",
 											headerClassName: "text-xl text-primary",
 										},
 									] as TableBbColumn[]
@@ -66,11 +68,18 @@ const SummaryPage = () => {
 										};
 									})}
 							/>
+							<ButtonBb
+								label="DETAIL >>"
+								className="ml-2 mb-1 w-2 h-3rem"
+								onClick={() => {
+									btnDetailClick(budgetSummary.period);
+								}}
+							/>
 						</div>
 					</div>
 				);
 			})}
-		</>
+		</div>
 	);
 };
 

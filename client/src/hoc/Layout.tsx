@@ -7,7 +7,7 @@ const Layout = (props: any) => {
 		<div>
 			<TopBar />
 			<Card className={styles.hFillPage}>{props.children}</Card>
-			<TopBar />
+			{/* <TopBar /> */}
 		</div>
 	);
 };

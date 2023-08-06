@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BudgetDetailResponse {
 
+	List<BudgetResponse> budgets;
 	List<BudgetGroupStoreTypeResponse> priceAsBudgetStoreType;
 
 }

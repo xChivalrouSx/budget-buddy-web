@@ -27,7 +27,11 @@ public class BudgetService {
 
 	public List<BudgetResponse> getBudgetsByPeriod(String period) {
 		User user = userService.getAuthenticatedUser();
-		return budgetRepository.getBudgetsByPeriod(period, user.getId()).stream().map(BudgetResponse::fromBudget).collect(Collectors.toList());
+		return budgetResponseFromBudget(budgetRepository.getBudgetsByPeriod(period, user.getId()));
+	}
+
+	private List<BudgetResponse> budgetResponseFromBudget(List<Budget> budgets) {
+		return budgets.stream().map(BudgetResponse::fromBudget).collect(Collectors.toList());
 	}
 
 	public BudgetSummaryResponse getBudgetSummaryByPeriod(String period) {
@@ -87,7 +91,9 @@ public class BudgetService {
 	public BudgetDetailResponse getBudgetDetailByPeriod(String period) {
 		User user = userService.getAuthenticatedUser();
 		List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(period, user.getId());
-		return calculateDetail(currentPeriodBudgets, period);
+		BudgetDetailResponse budgetDetailResponse = calculateDetail(currentPeriodBudgets, period);
+		budgetDetailResponse.setBudgets(budgetResponseFromBudget(currentPeriodBudgets));
+		return budgetDetailResponse;
 	}
 
 	private BudgetDetailResponse calculateDetail(List<Budget> currentPeriodBudgets, String period) {

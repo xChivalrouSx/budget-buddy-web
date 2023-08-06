@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,11 +46,11 @@ public class BudgetController {
 		return ResponseEntity.ok().body(budgetSummaryListResponse);
 	}
 
-	@GetMapping("/budget-detail")
-	public ResponseEntity<BudgetDetailResponse> getBudgetDetailByPeriod(@RequestBody BudgetsRequest budgetsRequest) {
-		DateUtil.checkYearAndMonthForPeriod(budgetsRequest.getYear(), budgetsRequest.getMonth());
+	@GetMapping("/budget-detail/{year}/{month}")
+	public ResponseEntity<BudgetDetailResponse> getBudgetDetailByPeriod(@PathVariable int year, @PathVariable int month) {
+		DateUtil.checkYearAndMonthForPeriod(year, month);
 
-		String period = DateUtil.getBudgetPeriod(budgetsRequest.getYear(), budgetsRequest.getMonth());
+		String period = DateUtil.getBudgetPeriod(year, month);
 		BudgetDetailResponse budgetSummaryResponse = budgetService.getBudgetDetailByPeriod(period);
 		return ResponseEntity.ok().body(budgetSummaryResponse);
 	}
