@@ -1,12 +1,13 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { TableBbColumn } from "./TableBbObjects";
+import { TableBbColumn, TableScrollable } from "./TableBbObjects";
 
 interface TableBbProps {
 	columns: TableBbColumn[];
 	data: any[];
 	clasName?: string;
 	rowClassName?: string;
+	scroolableBody?: TableScrollable;
 }
 
 const TableBb = (props: TableBbProps) => {
@@ -17,6 +18,8 @@ const TableBb = (props: TableBbProps) => {
 			value={props.data}
 			className={props.clasName}
 			rowClassName={rowClassName}
+			scrollable={props.scroolableBody?.scroolableBody}
+			scrollHeight={props.scroolableBody?.scroolableHeight}
 		>
 			{props.columns.map((col) => (
 				<Column

@@ -8,3 +8,8 @@ export interface TableBbColumn {
 	style?: React.CSSProperties;
 	sortable?: boolean;
 }
+
+export interface TableScrollable {
+	scroolableBody?: boolean;
+	scroolableHeight?: string;
+}
