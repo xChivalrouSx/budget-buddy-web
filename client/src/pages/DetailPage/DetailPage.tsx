@@ -1,6 +1,7 @@
 import { Card } from "primereact/card";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import TabViewBb from "../../components/TabViewBb";
 import TableBb from "../../components/TableBb";
 import { TableBbColumn } from "../../components/TableBb/TableBbObjects";
 import { BudgetDetailResponse } from "../../dto/response/BudgetDetailResponse";
@@ -116,13 +117,25 @@ const DetailPage = () => {
 	}, [period]);
 
 	return (
-		<>
-			{budgetDetail.budgets.length > 0 ? (
-				<Card title={period} className="text-primary">
-					<TableBb columns={columns} data={budgetDetail.budgets} />
-				</Card>
-			) : undefined}
-		</>
+		<TabViewBb
+			content={[
+				{
+					header: "Payments (Harcamalar)",
+					content: (
+						<>
+							{budgetDetail.budgets.length > 0 ? (
+								<Card title={period} className="text-primary">
+									<TableBb
+										columns={columns}
+										data={budgetDetail.budgets}
+									/>
+								</Card>
+							) : undefined}
+						</>
+					),
+				},
+			]}
+		/>
 	);
 };
 
