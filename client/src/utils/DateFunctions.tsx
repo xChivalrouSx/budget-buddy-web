@@ -9,3 +9,8 @@ export const getPeriodValue = (value: string): PeriodObject => {
 		month: parseInt(value.split("-")[1], 10),
 	} as PeriodObject;
 };
+
+export const getPeriodAsString = (year: number, month: number): string => {
+	const strMonth = month > 9 ? month.toString() : "0" + month.toString();
+	return year + "-" + strMonth;
+};

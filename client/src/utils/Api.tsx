@@ -47,6 +47,24 @@ const api = {
 		});
 	},
 
+	postMultipart<T = any>(url: string, data: any) {
+		instance.interceptors.request.use((config: any) => {
+			config.headers["Content-Type"] = "multipart/form-data";
+			return config;
+		});
+		return instance
+			.post<T>(url, data)
+			.then((response) => {
+				return response.data;
+			})
+			.finally(() => {
+				instance.interceptors.request.use((config: any) => {
+					config.headers["Content-Type"] = "application/json";
+					return config;
+				});
+			});
+	},
+
 	put<T = any>(url: string, data: any, fullResponse = false) {
 		return instance.put<T>(url, data).then((response) => {
 			return fullResponse ? response : response.data;

@@ -33,7 +33,6 @@ const LoginPage = () => {
 					username: formik.values.username,
 					password: formik.values.password,
 				} as AuthRequest).then((response: SuccessResponse) => {
-					console.log(response);
 					formik.setValues(loginFormikInitialValues);
 				});
 			} else if (formik.values.type === options[0]) {
@@ -41,7 +40,6 @@ const LoginPage = () => {
 					username: formik.values.username,
 					password: formik.values.password,
 				} as AuthRequest).then((response: AuthResponse) => {
-					console.log(response);
 					if (response !== undefined) {
 						setTokensOnLocalStorage(response.token);
 						api.setAuthHeader(response.token);
