@@ -146,6 +146,10 @@ const TopBar = () => {
 									bank: "Yapı Kredi",
 									inputValue: "yapi-kredi",
 								} as BudgetBank,
+								{
+									bank: "Enpara",
+									inputValue: "enpara",
+								} as BudgetBank,
 							]}
 							optionLabel="bank"
 							placeholder="Select a Bank"

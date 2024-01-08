@@ -37,6 +37,60 @@ public class Budget {
 	private int periodInt;
 	private String bank;
 
+	public static Budget fromEnparaPdfStringList(int index, String budgetLine, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
+		Budget budget = new Budget();
+
+		Pattern regexPattern = Pattern.compile(RegexPattern.ENPARA_WITH_INSTALLMENT.getPattern());
+		Matcher regexMatcher = regexPattern.matcher(budgetLine);
+		if (regexMatcher.find()) {
+			budget.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", regexMatcher.group(1)));
+			budget.setStoreName(regexMatcher.group(2));
+			budget.setPrice(clearStringAndParseDouble(regexMatcher.group(3).replace(".", ""), ",", "."));
+			budget.setTotalInstallment(Integer.parseInt(regexMatcher.group(5)));
+			budget.setPaidInstallment(Integer.parseInt(regexMatcher.group(4)));
+			budget.setRemainingInstallment(budget.getTotalInstallment() - budget.getPaidInstallment());
+			budget.setPriceForInstallment(clearStringAndParseDouble(regexMatcher.group(6).replace(".", ""), ",", "."));
+		} else {
+			regexPattern = Pattern.compile(RegexPattern.ENPARA_WITH_RETURN.getPattern());
+			regexMatcher = regexPattern.matcher(budgetLine);
+			if (regexMatcher.find()) {
+				budget.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", regexMatcher.group(1)));
+				budget.setStoreName(regexMatcher.group(2));
+
+				String totalInstallment = regexMatcher.group(4);
+				String paidInstallment = regexMatcher.group(3);
+				budget.setTotalInstallment(totalInstallment != null ? Integer.parseInt(totalInstallment) : 1);
+				budget.setPaidInstallment(paidInstallment != null ? Integer.parseInt(paidInstallment) : 1);
+				budget.setRemainingInstallment(budget.getTotalInstallment() - budget.getPaidInstallment());
+
+				budget.setPriceForInstallment(clearStringAndParseDouble(regexMatcher.group(5).replace(".", "").replace("-", "").trim(), ",", ".") * -1);
+				budget.setPrice(budget.getPriceForInstallment() * budget.getTotalInstallment());
+			} else {
+
+				regexPattern = Pattern.compile(RegexPattern.ENPARA_WITH_NO_INSTALLMENT.getPattern());
+				regexMatcher = regexPattern.matcher(budgetLine);
+				if (regexMatcher.find()) {
+					budget.setDate(DateUtil.stringDateToDate("dd/MM/yyyy", regexMatcher.group(1)));
+					budget.setStoreName(regexMatcher.group(2));
+
+					double tmpPrice = clearStringAndParseDouble(regexMatcher.group(3).replace(".", "").replace("-", ""), ",", ".");
+					tmpPrice = budget.getStoreName().contains("deme - Enpara.com Cepubesi") ? tmpPrice * -1 : tmpPrice;
+
+					budget.setPrice(tmpPrice);
+					budget.setTotalInstallment(1);
+					budget.setPaidInstallment(1);
+					budget.setRemainingInstallment(0);
+					budget.setPriceForInstallment(budget.getPrice());
+				} else {
+					return null;
+				}
+			}
+		}
+
+		setBudgetGeneralInfo(index, user.getId(), budget, budgetDocumentImportRequest);
+		return budget;
+	}
+
 	public static Budget fromWorldCardExcelStringList(int index, List<String> excelStringList,
 			BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
@@ -99,6 +153,11 @@ public class Budget {
 			throw new BbServiceException(ErrorMessage.DOCUMENT_FORMAT_NOT_VALID);
 		}
 
+		setBudgetGeneralInfo(index, user.getId(), budget, budgetDocumentImportRequest);
+		return budget;
+	}
+
+	private static void setBudgetGeneralInfo(int index, String userId, Budget budget, BudgetDocumentImportRequest budgetDocumentImportRequest) {
 		String period = DateUtil.getBudgetPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
 		budget.setPeriod(period);
 		int periodInt = DateUtil.getBudgetPeriodAsInt(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
@@ -106,10 +165,8 @@ public class Budget {
 
 		String textForId = index + "-" + budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
 		budget.setId(DigestUtils.md5Hex(textForId).toUpperCase());
-		budget.setUserId(user.getId());
+		budget.setUserId(userId);
 		budget.setBank(BudgetBank.getBudgetBankFromType(budgetDocumentImportRequest.getBank()).getName());
-
-		return budget;
 	}
 
 	private static Double clearStringAndParseDouble(String value, String replaceValue, String replacementValue) {

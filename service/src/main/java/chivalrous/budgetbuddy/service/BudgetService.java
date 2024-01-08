@@ -97,7 +97,7 @@ public class BudgetService {
 	}
 
 	private BudgetDetailResponse calculateDetail(List<Budget> currentPeriodBudgets, String period) {
-		Map<String, Double> mapForStoreTypeTotalPrice = currentPeriodBudgets.stream()
+		Map<String, Double> mapForStoreTypeTotalPrice = currentPeriodBudgets.stream().filter(p -> p.getStoreType() != null)
 				.collect(Collectors.groupingBy(Budget::getStoreType, Collectors.summingDouble(Budget::getPriceForInstallment)));
 
 		BudgetDetailResponse budgetDetailResponse = new BudgetDetailResponse();
