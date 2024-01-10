@@ -14,7 +14,6 @@ import chivalrous.budgetbuddy.dto.response.BudgetSummaryResponse;
 import chivalrous.budgetbuddy.model.Budget;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.BudgetRepository;
-import chivalrous.budgetbuddy.util.DateUtil;
 import chivalrous.budgetbuddy.util.PriceUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -44,15 +43,13 @@ public class BudgetService {
 		User user = userService.getAuthenticatedUser();
 		List<BudgetSummaryResponse> budgetSummaryList = new ArrayList<>();
 
-		String period = budgetRepository.getMaxBudgetPeriod(user.getId());
-		boolean shouldContinue = !period.isEmpty();
-		while (shouldContinue) {
-			List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(period, user.getId());
+		List<String> distinctPeriodList = budgetRepository.getAllDistinctPeriod();
+		for (String tmpPeriod : distinctPeriodList) {
+			List<Budget> currentPeriodBudgets = budgetRepository.getBudgetsByPeriod(tmpPeriod, user.getId());
 			if (currentPeriodBudgets.isEmpty()) {
 				break;
 			}
-			budgetSummaryList.add(calculateSummary(currentPeriodBudgets, period));
-			period = DateUtil.getPreviousBudgetPeriod(period);
+			budgetSummaryList.add(calculateSummary(currentPeriodBudgets, tmpPeriod));
 		}
 
 		return budgetSummaryList;
