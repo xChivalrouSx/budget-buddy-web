@@ -51,8 +51,10 @@ public class BudgetDocumentService {
 			budgetData = getBudgetFromYapiKrediExcel(budgetDocumentImportRequest);
 		}
 
-		budgetDocumentRepository.deleteBudgetsWithPeriod(
-				DateUtil.getBudgetPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth()));
+		budgetDocumentRepository.deleteBudgetsWithPeriodAndBank(
+				DateUtil.getBudgetPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth()),
+				BudgetBank.getBudgetBankFromType(budgetDocumentImportRequest.getBank()).getName());
+
 		budgetDocumentRepository.saveBudgets(budgetData);
 	}
 

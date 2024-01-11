@@ -23,10 +23,13 @@ public class BudgetDocumentRepository {
 		}
 	}
 
-	public void deleteBudgetsWithPeriod(String period) {
+	public void deleteBudgetsWithPeriodAndBank(String period, String bank) {
 		try {
 			Firestore db = FirestoreClient.getFirestore();
-			db.collection(BbCollection.BUDGET.getName()).whereEqualTo("period", period).get().get().getDocuments().forEach(x -> x.getReference().delete());
+			db.collection(BbCollection.BUDGET.getName())
+					.whereEqualTo("period", period)
+					.whereEqualTo("bank", bank)
+					.get().get().getDocuments().forEach(x -> x.getReference().delete());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
 			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_DELETE, e);
