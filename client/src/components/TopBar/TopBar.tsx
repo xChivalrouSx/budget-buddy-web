@@ -37,10 +37,10 @@ const TopBar = () => {
 	const [showAddDialog, setShowAddDialog] = useState(false);
 	const innerMenuItems = [
 		{
-			label: "Import Document",
+			label: "Import",
 			items: [
 				{
-					label: "Yapı Kredi - Excel",
+					label: "Import Document",
 					icon: "pi pi-fw pi-plus",
 					command: () => {
 						setShowAddDialog(true);
@@ -126,7 +126,7 @@ const TopBar = () => {
 				}
 			/>
 			<Dialog
-				header="Import (Yapı Kredi - Excel)"
+				header="Import Document"
 				visible={showAddDialog}
 				style={{ width: "20vw" }}
 				onHide={() => setShowAddDialog(false)}
