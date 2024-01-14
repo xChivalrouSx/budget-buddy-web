@@ -3,9 +3,11 @@ package chivalrous.budgetbuddy.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
+import chivalrous.budgetbuddy.dto.request.BudgetDocumentSingleImportRequest;
 import chivalrous.budgetbuddy.dto.response.SuccessResponse;
 import chivalrous.budgetbuddy.service.BudgetDocumentService;
 import chivalrous.budgetbuddy.util.DateUtil;
@@ -22,6 +24,13 @@ public class BudgetDocumentController {
 		DateUtil.checkYearAndMonthForPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
 		budgetDocumentService.getBudgetFromFile(budgetDocumentImportRequest);
 		return ResponseEntity.ok().body(new SuccessResponse("All data imported."));
+	}
+
+	@PostMapping("/budget-document/single-import")
+	public ResponseEntity<SuccessResponse> getBudget(@RequestBody BudgetDocumentSingleImportRequest budgetDocumentSingleImportRequest) {
+		DateUtil.checkYearAndMonthForPeriod(budgetDocumentSingleImportRequest.getYear(), budgetDocumentSingleImportRequest.getMonth());
+		budgetDocumentService.getBudget(budgetDocumentSingleImportRequest);
+		return ResponseEntity.ok().body(new SuccessResponse("Data imported."));
 	}
 
 }

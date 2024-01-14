@@ -19,6 +19,7 @@ import chivalrous.budgetbuddy.constant.BudgetBank;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.constant.RegexPattern;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
+import chivalrous.budgetbuddy.dto.request.BudgetDocumentSingleImportRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.model.Budget;
 import chivalrous.budgetbuddy.model.User;
@@ -35,6 +36,12 @@ public class BudgetDocumentService {
 
 	private final BudgetDocumentRepository budgetDocumentRepository;
 	private final UserService userService;
+
+	public void getBudget(BudgetDocumentSingleImportRequest budgetDocumentSingleImportRequest) {
+		User currentUser = userService.getAuthenticatedUser();
+		Budget budget = Budget.fromSingleImportDTO(budgetDocumentSingleImportRequest, currentUser);
+		budgetDocumentRepository.saveBudget(budget);
+	}
 
 	public void getBudgetFromFile(BudgetDocumentImportRequest budgetDocumentImportRequest) {
 		List<Budget> budgetData = new ArrayList<>();

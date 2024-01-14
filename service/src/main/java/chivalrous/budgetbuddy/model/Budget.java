@@ -10,7 +10,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import chivalrous.budgetbuddy.constant.BudgetBank;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.constant.RegexPattern;
+import chivalrous.budgetbuddy.dto.SingleImportDTO;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
+import chivalrous.budgetbuddy.dto.request.BudgetDocumentSingleImportRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.util.DateUtil;
 import lombok.Getter;
@@ -36,6 +38,26 @@ public class Budget {
 	private String period;
 	private int periodInt;
 	private String bank;
+
+	public static Budget fromSingleImportDTO(BudgetDocumentSingleImportRequest budgetDocumentSingleImportRequest, User user) {
+		Budget budget = new Budget();
+		SingleImportDTO singleImportDTO = budgetDocumentSingleImportRequest.getSingleImportDTO();
+
+		budget.setDate(singleImportDTO.getDate());
+		budget.setPrice(singleImportDTO.getPrice());
+		budget.setStoreName(singleImportDTO.getDescription());
+		budget.setTags(singleImportDTO.getTags());
+
+		setBudgetPeriodValues(budget, budgetDocumentSingleImportRequest.getYear(), budgetDocumentSingleImportRequest.getMonth());
+
+		String textForId = budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
+		setBudgetId(budget, textForId);
+
+		budget.setUserId(user.getId());
+		budget.setBank("Other (-)");
+
+		return budget;
+	}
 
 	public static Budget fromEnparaPdfStringList(int index, String budgetLine, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
@@ -158,15 +180,24 @@ public class Budget {
 	}
 
 	private static void setBudgetGeneralInfo(int index, String userId, Budget budget, BudgetDocumentImportRequest budgetDocumentImportRequest) {
-		String period = DateUtil.getBudgetPeriod(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
-		budget.setPeriod(period);
-		int periodInt = DateUtil.getBudgetPeriodAsInt(budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
-		budget.setPeriodInt(periodInt);
+		setBudgetPeriodValues(budget, budgetDocumentImportRequest.getYear(), budgetDocumentImportRequest.getMonth());
 
 		String textForId = index + "-" + budget.getPeriodInt() + budget.getDate().toString() + budget.getStoreName() + budget.getPrice();
-		budget.setId(DigestUtils.md5Hex(textForId).toUpperCase());
+		setBudgetId(budget, textForId);
+
 		budget.setUserId(userId);
 		budget.setBank(BudgetBank.getBudgetBankFromType(budgetDocumentImportRequest.getBank()).getName());
+	}
+
+	private static void setBudgetId(Budget budget, String stringIdForHex) {
+		budget.setId(DigestUtils.md5Hex(stringIdForHex).toUpperCase());
+	}
+
+	private static void setBudgetPeriodValues(Budget budget, int year, int month) {
+		String period = DateUtil.getBudgetPeriod(year, month);
+		budget.setPeriod(period);
+		int periodInt = DateUtil.getBudgetPeriodAsInt(year, month);
+		budget.setPeriodInt(periodInt);
 	}
 
 	private static Double clearStringAndParseDouble(String value, String replaceValue, String replacementValue) {

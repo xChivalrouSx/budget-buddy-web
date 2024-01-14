@@ -16,6 +16,11 @@ import chivalrous.budgetbuddy.model.Budget;
 @Repository
 public class BudgetDocumentRepository {
 
+	public void saveBudget(Budget budget) {
+		Firestore db = FirestoreClient.getFirestore();
+		db.collection(BbCollection.BUDGET.getName()).document(budget.getId()).set(budget);
+	}
+
 	public void saveBudgets(List<Budget> budgets) {
 		Firestore db = FirestoreClient.getFirestore();
 		for (Budget budgetProcess : budgets) {
