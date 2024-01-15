@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BudgetDocumentSingleImportRequest {
+public class BudgetSingleImportRequest {
 
 	private SingleImportDTO singleImportDTO;
 	private String bank;

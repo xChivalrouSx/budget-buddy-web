@@ -6,13 +6,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import chivalrous.budgetbuddy.constant.BudgetBank;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
 import chivalrous.budgetbuddy.constant.RegexPattern;
 import chivalrous.budgetbuddy.dto.SingleImportDTO;
 import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
-import chivalrous.budgetbuddy.dto.request.BudgetDocumentSingleImportRequest;
+import chivalrous.budgetbuddy.dto.request.BudgetSingleImportRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.util.DateUtil;
 import lombok.Getter;
@@ -39,14 +40,20 @@ public class Budget {
 	private int periodInt;
 	private String bank;
 
-	public static Budget fromSingleImportDTO(BudgetDocumentSingleImportRequest budgetDocumentSingleImportRequest, User user) {
+	public static Budget fromSingleImportDTO(BudgetSingleImportRequest budgetDocumentSingleImportRequest, User user) {
 		Budget budget = new Budget();
 		SingleImportDTO singleImportDTO = budgetDocumentSingleImportRequest.getSingleImportDTO();
 
 		budget.setDate(singleImportDTO.getDate());
-		budget.setPrice(singleImportDTO.getPrice());
 		budget.setStoreName(singleImportDTO.getDescription());
 		budget.setTags(singleImportDTO.getTags());
+
+		budget.setPrice(singleImportDTO.getPrice());
+		budget.setPriceForInstallment(singleImportDTO.getPrice());
+
+		budget.setTotalInstallment(1);
+		budget.setPaidInstallment(1);
+		budget.setRemainingInstallment(budget.getTotalInstallment() - budget.getPaidInstallment());
 
 		setBudgetPeriodValues(budget, budgetDocumentSingleImportRequest.getYear(), budgetDocumentSingleImportRequest.getMonth());
 
@@ -54,7 +61,7 @@ public class Budget {
 		setBudgetId(budget, textForId);
 
 		budget.setUserId(user.getId());
-		budget.setBank("Other (-)");
+		budget.setBank(StringUtils.isEmpty(budgetDocumentSingleImportRequest.getBank().trim()) ? "Other (-)" : budgetDocumentSingleImportRequest.getBank());
 
 		return budget;
 	}
