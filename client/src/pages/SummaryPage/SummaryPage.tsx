@@ -29,7 +29,8 @@ ChartJS.register(
 );
 
 const titleValue: string[] = [
-	"Total (Toplam)",
+	"Total Income (Toplam Gelir)",
+	"Total Price (Toplam Ödeme)",
 	"Total Price Without Installment (Taksitsiz Toplam)",
 	"Total Price With Installment (Taksitli Toplam)",
 	"Total Price Ending Installment (Biten Taksitli Toplam)",

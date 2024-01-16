@@ -56,28 +56,35 @@ public class BudgetService {
 	}
 
 	private BudgetSummaryResponse calculateSummary(List<Budget> currentPeriodBudgets, String period) {
-		Double totalPrice = currentPeriodBudgets.stream()
+		List<Budget> outcomePeriodBudgets = currentPeriodBudgets.stream().filter(p -> !p.isIncome()).collect(Collectors.toList());
+		Double totalPrice = outcomePeriodBudgets.stream()
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
-		Double totalPriceWithoutInstallment = currentPeriodBudgets.stream()
+		Double totalPriceWithoutInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() == 1)
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
-		Double totalPriceWithInstallment = currentPeriodBudgets.stream()
+		Double totalPriceWithInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1)
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
-		Double totalPriceEndingInstallment = currentPeriodBudgets.stream()
+		Double totalPriceEndingInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1 && p.getTotalInstallment() == p.getPaidInstallment())
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
-		Double totalPriceStartingInstallment = currentPeriodBudgets.stream()
+		Double totalPriceStartingInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1 && p.getPaidInstallment() == 1)
+				.mapToDouble(Budget::getPriceForInstallment)
+				.sum();
+
+		List<Budget> incomePeriodBudgets = currentPeriodBudgets.stream().filter(p -> p.isIncome()).collect(Collectors.toList());
+		Double totalIncome = incomePeriodBudgets.stream()
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
 
 		return new BudgetSummaryResponse(
 				period,
+				PriceUtil.formatPrice(totalIncome),
 				PriceUtil.formatPrice(totalPrice),
 				PriceUtil.formatPrice(totalPriceWithoutInstallment),
 				PriceUtil.formatPrice(totalPriceWithInstallment),

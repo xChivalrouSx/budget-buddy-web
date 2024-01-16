@@ -5,10 +5,11 @@ export interface BudgetDocumentImportRequest {
 	month: number;
 }
 
-export interface BudgetDocumentSingleImportRequest {
+export interface BudgetSingleImportRequest {
 	bank: string;
 	year: number;
 	month: number;
+	income: boolean;
 	singleImportDTO: SingleImportDTO;
 }
 

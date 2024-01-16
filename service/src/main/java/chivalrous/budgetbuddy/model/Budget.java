@@ -39,6 +39,7 @@ public class Budget {
 	private String period;
 	private int periodInt;
 	private String bank;
+	private boolean income;
 
 	public static Budget fromSingleImportDTO(BudgetSingleImportRequest budgetDocumentSingleImportRequest, User user) {
 		Budget budget = new Budget();
@@ -48,6 +49,7 @@ public class Budget {
 		budget.setStoreName(singleImportDTO.getDescription());
 		budget.setTags(singleImportDTO.getTags());
 
+		budget.setIncome(budgetDocumentSingleImportRequest.isIncome());
 		budget.setPrice(singleImportDTO.getPrice());
 		budget.setPriceForInstallment(singleImportDTO.getPrice());
 
@@ -68,6 +70,7 @@ public class Budget {
 
 	public static Budget fromEnparaPdfStringList(int index, String budgetLine, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
+		budget.setIncome(false);
 
 		Pattern regexPattern = Pattern.compile(RegexPattern.ENPARA_WITH_INSTALLMENT.getPattern());
 		Matcher regexMatcher = regexPattern.matcher(budgetLine);
@@ -123,6 +126,7 @@ public class Budget {
 	public static Budget fromWorldCardExcelStringList(int index, List<String> excelStringList,
 			BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
 		Budget budget = new Budget();
+		budget.setIncome(false);
 
 		if (excelStringList.get(0).trim().equals("-")) {
 			budget.setDate(

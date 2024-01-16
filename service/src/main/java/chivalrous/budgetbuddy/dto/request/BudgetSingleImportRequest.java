@@ -14,5 +14,6 @@ public class BudgetSingleImportRequest {
 	private String bank;
 	private int year;
 	private int month;
+	private boolean income;
 
 }

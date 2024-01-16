@@ -8,6 +8,7 @@ import lombok.Getter;
 public class BudgetSummaryResponse {
 
 	private String period;
+	private Double totalIncome;
 	private Double totalPrice;
 	private Double totalPriceWithoutInstallment;
 	private Double totalPriceWithInstallment;

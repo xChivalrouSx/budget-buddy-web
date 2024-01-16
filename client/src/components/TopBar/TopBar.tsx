@@ -9,7 +9,7 @@ import { CurrencyExchange } from "react-bootstrap-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
 	BudgetDocumentImportRequest,
-	BudgetDocumentSingleImportRequest as BudgetSingleImportRequest,
+	BudgetSingleImportRequest,
 	SingleImportDTO,
 } from "../../dto/request/BudgetDocumentImportRequest";
 import { SuccessResponse } from "../../dto/response/SuccessResponse";
@@ -18,6 +18,7 @@ import { hasLocalStorageTokens, removeTokens } from "../../utils/AuthFunctions";
 import { getPeriodAsString } from "../../utils/DateFunctions";
 import ButtonBb from "../ButtonBb";
 import CalenderBb from "../CalenderBb";
+import CheckBoxBb from "../CheckboxBb/CheckboxBb";
 import InputNumberBb from "../InputNumberBb";
 import InputTextBb from "../InputTextBb";
 import styles from "./TopBar.module.css";
@@ -42,6 +43,7 @@ const FormikForBudgetInitialValues = {
 	date: new Date(),
 	price: 0 as number,
 	description: "",
+	income: false as boolean,
 };
 
 const TopBar = () => {
@@ -110,6 +112,7 @@ const TopBar = () => {
 				bank: formikForBudget.values.bank.inputValue, // TODO: Implement bank selection later (Should handle duplicate entry)
 				year: formikForBudget.values.year,
 				month: formikForBudget.values.month,
+				income: formikForBudget.values.income,
 				singleImportDTO: {
 					date: formikForBudget.values.date,
 					price: formikForBudget.values.price,
@@ -341,6 +344,21 @@ const TopBar = () => {
 								Boolean(formikForBudget.errors.description)
 							}
 							errorHelperText={formikForBudget.errors.description}
+							className="block"
+						/>
+					</div>
+					<div className="mt-5 card flex justify-content-center">
+						<CheckBoxBb
+							id="income"
+							name="income"
+							label="Income"
+							onChange={formikForBudget.handleChange}
+							checked={formikForBudget.values.income}
+							error={
+								formikForBudget.touched.income &&
+								Boolean(formikForBudget.errors.income)
+							}
+							errorHelperText={formikForBudget.errors.income}
 							className="block"
 						/>
 					</div>
