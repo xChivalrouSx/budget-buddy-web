@@ -8,6 +8,7 @@ import {
 	Title,
 	Tooltip,
 } from "chart.js";
+import { Panel, PanelHeaderTemplateOptions } from "primereact/panel";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
@@ -28,13 +29,23 @@ ChartJS.register(
 	Legend
 );
 
+var template = (options: PanelHeaderTemplateOptions) => {
+	const className = `${options.className} justify-content-start py-2`;
+
+	return (
+		<div className={className}>
+			<span className={options.titleClassName}>{options.titleElement}</span>
+		</div>
+	);
+};
+
 const titleValue: string[] = [
 	"Total Income (Toplam Gelir)",
-	"Total Price (Toplam Ödeme)",
-	"Total Price Without Installment (Taksitsiz Toplam)",
-	"Total Price With Installment (Taksitli Toplam)",
-	"Total Price Ending Installment (Biten Taksitli Toplam)",
-	"Total Price Starting Installment (Eklenen Taksitli Toplam)",
+	"Total Spend (Toplam Ödeme)",
+	"Total Spend Without Installment (Taksitsiz Toplam)",
+	"Total Spend With Installment (Taksitli Toplam)",
+	"Total Ending Installment (Biten Taksitli Toplam)",
+	"Total Starting Installment (Eklenen Taksitli Toplam)",
 ];
 
 const SummaryPage = () => {
@@ -171,7 +182,33 @@ const SummaryPage = () => {
 										};
 									})}
 							/>
-							<div className="ml-2 mb-1 w-3 h-3rem">
+							<div className="ml-3 w-3 h-full">
+								<Panel
+									headerTemplate={template}
+									className="mb-2 text-xs"
+									header="Total Card Spending"
+								>
+									<p className="p-0 m-0">Soon!...</p>
+								</Panel>
+								<Panel
+									headerTemplate={template}
+									className="mb-2 text-xs"
+									header="Total Not Card Spending"
+								>
+									<p className="m-0">Soon!...</p>
+								</Panel>
+								<Panel
+									headerTemplate={template}
+									className="mb-2 text-xs"
+									header="Result (Income - Spending)"
+								>
+									<p className="m-0">
+										{formatCurrencyAsTR(
+											budgetSummary.totalIncome -
+												budgetSummary.totalPrice
+										)}
+									</p>
+								</Panel>
 								<ButtonBb
 									label="DETAIL >>"
 									className="mt-1 w-full h-3rem"
