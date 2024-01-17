@@ -60,7 +60,7 @@ const SummaryPage = () => {
 	var started = [] as any[];
 	return (
 		<div className="grid">
-			<div className="col-12 bg-gray-900 mb-3">
+			<div className="col-12 bg-gray-900">
 				<Line
 					data={{
 						labels: budgetSummaries.map((item) => item.period).reverse(),
@@ -135,7 +135,7 @@ const SummaryPage = () => {
 							},
 						},
 					}}
-					className="w-8 h-26rem m-auto "
+					className="w-8 h-24rem m-auto "
 				/>
 			</div>
 
@@ -145,20 +145,20 @@ const SummaryPage = () => {
 						<div className="bg-gray-900 w-12 p-3 inline-flex align-items-end">
 							<TableBb
 								key={"summary-table-for-" + budgetSummary.period}
-								clasName="w-10"
-								rowClassName="h-3rem"
+								clasName="w-9"
+								rowClassName="text-xs"
 								columns={
 									[
 										{
 											dataField: "title",
 											header: budgetSummary.period,
 											dataClassName: "font-bold",
-											headerClassName: "text-xl text-primary",
+											headerClassName: "text-sm text-primary",
 										},
 										{
 											dataField: "priceValue",
 											header: "Price (Tutar)",
-											headerClassName: "text-xl text-primary",
+											headerClassName: "text-sm text-primary",
 										},
 									] as TableBbColumn[]
 								}
@@ -171,13 +171,15 @@ const SummaryPage = () => {
 										};
 									})}
 							/>
-							<ButtonBb
-								label="DETAIL >>"
-								className="ml-2 mb-1 w-2 h-3rem"
-								onClick={() => {
-									btnDetailClick(budgetSummary.period);
-								}}
-							/>
+							<div className="ml-2 mb-1 w-3 h-3rem">
+								<ButtonBb
+									label="DETAIL >>"
+									className="mt-1 w-full h-3rem"
+									onClick={() => {
+										btnDetailClick(budgetSummary.period);
+									}}
+								/>
+							</div>
 						</div>
 					</div>
 				);
