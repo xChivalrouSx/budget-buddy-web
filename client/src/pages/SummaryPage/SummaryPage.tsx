@@ -39,15 +39,6 @@ var template = (options: PanelHeaderTemplateOptions) => {
 	);
 };
 
-const titleValue: string[] = [
-	"Total Income (Toplam Gelir)",
-	"Total Spend (Toplam Ödeme)",
-	"Total Spend Without Installment (Taksitsiz Toplam)",
-	"Total Spend With Installment (Taksitli Toplam)",
-	"Total Ending Installment (Biten Taksitli Toplam)",
-	"Total Starting Installment (Eklenen Taksitli Toplam)",
-];
-
 const SummaryPage = () => {
 	const navigate = useNavigate();
 
@@ -80,7 +71,12 @@ const SummaryPage = () => {
 								label: "Total Price (Toplam Tutar)",
 
 								data: budgetSummaries
-									.map((item) => item.totalPrice)
+									.map(
+										(item) =>
+											item.summaryDetailList.find(
+												(x) => x.order === 2
+											)?.value ?? 0
+									)
 									.reverse(),
 								borderColor: "rgb(255, 99, 132)",
 								backgroundColor: "rgba(255, 99, 132, 0.5)",
@@ -173,12 +169,16 @@ const SummaryPage = () => {
 										},
 									] as TableBbColumn[]
 								}
-								data={Object.entries(budgetSummary)
-									.filter(([key, value]) => key !== "period")
-									.map(([key, value], index) => {
+								data={budgetSummary.summaryDetailList
+									.filter((x) => x.showDefault)
+									.sort(
+										(firstItem, secondItem) =>
+											firstItem.order - secondItem.order
+									)
+									.map((x) => {
 										return {
-											title: titleValue[index],
-											priceValue: formatCurrencyAsTR(value),
+											title: x.title,
+											priceValue: formatCurrencyAsTR(x.value),
 										};
 									})}
 							/>
@@ -188,14 +188,26 @@ const SummaryPage = () => {
 									className="mb-2 text-xs"
 									header="Total Card Spending"
 								>
-									<p className="p-0 m-0">Soon!...</p>
+									<p className="p-0 m-0">
+										{formatCurrencyAsTR(
+											budgetSummary.summaryDetailList.find(
+												(x) => x.order === -1
+											)?.value ?? 0
+										)}
+									</p>
 								</Panel>
 								<Panel
 									headerTemplate={template}
 									className="mb-2 text-xs"
 									header="Total Not Card Spending"
 								>
-									<p className="m-0">Soon!...</p>
+									<p className="m-0">
+										{formatCurrencyAsTR(
+											budgetSummary.summaryDetailList.find(
+												(x) => x.order === -2
+											)?.value ?? 0
+										)}
+									</p>
 								</Panel>
 								<Panel
 									headerTemplate={template}
@@ -204,8 +216,9 @@ const SummaryPage = () => {
 								>
 									<p className="m-0">
 										{formatCurrencyAsTR(
-											budgetSummary.totalIncome -
-												budgetSummary.totalPrice
+											budgetSummary.summaryDetailList.find(
+												(x) => x.order === -3
+											)?.value ?? 0
 										)}
 									</p>
 								</Panel>

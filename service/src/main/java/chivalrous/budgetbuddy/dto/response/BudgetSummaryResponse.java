@@ -1,5 +1,8 @@
 package chivalrous.budgetbuddy.dto.response;
 
+import java.util.List;
+
+import chivalrous.budgetbuddy.dto.BudgetSummaryDetailDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,11 +11,6 @@ import lombok.Getter;
 public class BudgetSummaryResponse {
 
 	private String period;
-	private Double totalIncome;
-	private Double totalPrice;
-	private Double totalPriceWithoutInstallment;
-	private Double totalPriceWithInstallment;
-	private Double totalPriceEndingInstallment;
-	private Double totalPriceStartingInstallment;
+	private List<BudgetSummaryDetailDTO> summaryDetailList;
 
 }

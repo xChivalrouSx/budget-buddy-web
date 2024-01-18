@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import chivalrous.budgetbuddy.constant.BudgetBank;
 import chivalrous.budgetbuddy.constant.ErrorMessage;
@@ -63,7 +62,7 @@ public class Budget {
 		setBudgetId(budget, textForId);
 
 		budget.setUserId(user.getId());
-		budget.setBank(StringUtils.isEmpty(budgetDocumentSingleImportRequest.getBank().trim()) ? "Other (-)" : budgetDocumentSingleImportRequest.getBank());
+		budget.setBank(budgetDocumentSingleImportRequest.getBank().trim());
 
 		return budget;
 	}

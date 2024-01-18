@@ -1,9 +1,11 @@
 export interface BudgetSummaryResponse {
 	period: string;
-	totalIncome: number;
-	totalPrice: number;
-	totalPriceWithoutInstallment: number;
-	totalPriceWithInstallment: number;
-	totalPriceEndingInstallment: number;
-	totalPriceStartingInstallment: number;
+	summaryDetailList: BudgetSummaryDetailDTO[];
+}
+
+export interface BudgetSummaryDetailDTO {
+	title: string;
+	value: number;
+	showDefault: boolean;
+	order: number;
 }

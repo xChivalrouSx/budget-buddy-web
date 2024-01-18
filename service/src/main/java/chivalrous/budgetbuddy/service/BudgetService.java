@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import chivalrous.budgetbuddy.dto.BudgetSummaryDetailDTO;
 import chivalrous.budgetbuddy.dto.response.BudgetDetailResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetGroupStoreTypeResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetResponse;
@@ -56,40 +57,57 @@ public class BudgetService {
 	}
 
 	private BudgetSummaryResponse calculateSummary(List<Budget> currentPeriodBudgets, String period) {
+		List<BudgetSummaryDetailDTO> resultList = new ArrayList<>();
+
 		List<Budget> outcomePeriodBudgets = currentPeriodBudgets.stream().filter(p -> !p.isIncome()).collect(Collectors.toList());
+
 		Double totalPrice = outcomePeriodBudgets.stream()
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(new BudgetSummaryDetailDTO("Total Spend (Toplam Ödeme)", PriceUtil.formatPrice(totalPrice), true, 2));
+
 		Double totalPriceWithoutInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() == 1)
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(
+				new BudgetSummaryDetailDTO("Total Spend Without Installment (Taksitsiz Toplam)", PriceUtil.formatPrice(totalPriceWithoutInstallment), true, 3));
+
 		Double totalPriceWithInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1)
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(new BudgetSummaryDetailDTO("Total Spend With Installment (Taksitli Toplam)", PriceUtil.formatPrice(totalPriceWithInstallment), true, 4));
+
 		Double totalPriceEndingInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1 && p.getTotalInstallment() == p.getPaidInstallment())
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(
+				new BudgetSummaryDetailDTO("Total Ending Installment (Biten Taksitli Toplam)", PriceUtil.formatPrice(totalPriceEndingInstallment), true, 51));
+
 		Double totalPriceStartingInstallment = outcomePeriodBudgets.stream()
 				.filter(p -> p.getTotalInstallment() > 1 && p.getPaidInstallment() == 1)
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(new BudgetSummaryDetailDTO("Total Starting Installment (Eklenen Taksitli Toplam)", PriceUtil.formatPrice(totalPriceStartingInstallment),
+				true, 6));
 
 		List<Budget> incomePeriodBudgets = currentPeriodBudgets.stream().filter(p -> p.isIncome()).collect(Collectors.toList());
 		Double totalIncome = incomePeriodBudgets.stream()
 				.mapToDouble(Budget::getPriceForInstallment)
 				.sum();
+		resultList.add(new BudgetSummaryDetailDTO("Total Income (Toplam Gelir)", PriceUtil.formatPrice(totalIncome), true, 1));
 
-		return new BudgetSummaryResponse(
-				period,
-				PriceUtil.formatPrice(totalIncome),
-				PriceUtil.formatPrice(totalPrice),
-				PriceUtil.formatPrice(totalPriceWithoutInstallment),
-				PriceUtil.formatPrice(totalPriceWithInstallment),
-				PriceUtil.formatPrice(totalPriceEndingInstallment),
-				PriceUtil.formatPrice(totalPriceStartingInstallment));
+		Double cardSpendingResult = currentPeriodBudgets.stream()
+				.filter(p -> !p.getBank().equals(""))
+				.mapToDouble(Budget::getPriceForInstallment)
+				.sum();
+		resultList.add(new BudgetSummaryDetailDTO("Total Card Spending", PriceUtil.formatPrice(cardSpendingResult), false, -1));
+		resultList.add(new BudgetSummaryDetailDTO("Total Not Card Spending", PriceUtil.formatPrice(totalPrice - cardSpendingResult), false, -2));
+		resultList.add(new BudgetSummaryDetailDTO("Result (Income - Spending)", PriceUtil.formatPrice(totalIncome - totalPrice), false, -3));
+
+		return new BudgetSummaryResponse(period, resultList);
 	}
 
 	public BudgetDetailResponse getBudgetDetailByPeriod(String period) {
