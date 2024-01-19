@@ -105,7 +105,7 @@ public class BudgetService {
 				.sum();
 		resultList.add(new BudgetSummaryDetailDTO("Total Card Spending", PriceUtil.formatPrice(cardSpendingResult), false, -1));
 		resultList.add(new BudgetSummaryDetailDTO("Total Not Card Spending", PriceUtil.formatPrice(totalPrice - cardSpendingResult), false, -2));
-		resultList.add(new BudgetSummaryDetailDTO("Result (Income - Spending)", PriceUtil.formatPrice(totalIncome - totalPrice), false, -3));
+		resultList.add(new BudgetSummaryDetailDTO("Result (Income - Spend)", PriceUtil.formatPrice(totalIncome - totalPrice), false, -3));
 
 		return new BudgetSummaryResponse(period, resultList);
 	}

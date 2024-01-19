@@ -58,6 +58,45 @@ const SummaryPage = () => {
 		navigate("/budget-detail/" + period);
 	};
 
+	var GraphOnProgress = (context: any) => {
+		let delay = 0;
+		let index = context.currentStep;
+		var chart = context.chart;
+		if (!started[index]) {
+			delay = index * delayBetweenPoints;
+			started[index] = true;
+		}
+		var { x, y } =
+			index > 0
+				? chart.getDatasetMeta(0).data[index - 1].getProps(["x", "y"], true)
+				: {
+						x: 0,
+						y: chart.scales.y.getPixelForValue(100),
+				  };
+
+		return {
+			x: {
+				easing: "linear",
+				duration: delayBetweenPoints,
+				from: x,
+				delay,
+			},
+			y: {
+				easing: "linear",
+				duration: delayBetweenPoints * 500,
+				from: y,
+				delay,
+			},
+			skip: {
+				type: "boolean",
+				duration: delayBetweenPoints,
+				from: true,
+				to: false,
+				delay: delay,
+			},
+		};
+	};
+
 	var delayBetweenPoints = 10;
 	var started = [] as any[];
 	return (
@@ -68,8 +107,7 @@ const SummaryPage = () => {
 						labels: budgetSummaries.map((item) => item.period).reverse(),
 						datasets: [
 							{
-								label: "Total Price (Toplam Tutar)",
-
+								label: "Total Spend (Toplam Ödeme)",
 								data: budgetSummaries
 									.map(
 										(item) =>
@@ -81,51 +119,39 @@ const SummaryPage = () => {
 								borderColor: "rgb(255, 99, 132)",
 								backgroundColor: "rgba(255, 99, 132, 0.5)",
 								animation: {
-									onProgress: (context) => {
-										let delay = 0;
-										let index = context.currentStep;
-										var chart = context.chart;
-										if (!started[index]) {
-											delay = index * delayBetweenPoints;
-											started[index] = true;
-										}
-										var { x, y } =
-											index > 0
-												? chart
-														.getDatasetMeta(0)
-														.data[index - 1].getProps(
-															["x", "y"],
-															true
-														)
-												: {
-														x: 0,
-														y: chart.scales.y.getPixelForValue(
-															100
-														),
-												  };
-
-										return {
-											x: {
-												easing: "linear",
-												duration: delayBetweenPoints,
-												from: x,
-												delay,
-											},
-											y: {
-												easing: "linear",
-												duration: delayBetweenPoints * 500,
-												from: y,
-												delay,
-											},
-											skip: {
-												type: "boolean",
-												duration: delayBetweenPoints,
-												from: true,
-												to: false,
-												delay: delay,
-											},
-										};
-									},
+									onProgress: GraphOnProgress,
+								},
+							},
+							{
+								label: "Total Income (Toplam Gelir)",
+								data: budgetSummaries
+									.map(
+										(item) =>
+											item.summaryDetailList.find(
+												(x) => x.order === 1
+											)?.value ?? 0
+									)
+									.reverse(),
+								borderColor: "rgb(102, 255, 102)",
+								backgroundColor: "rgba(102, 255, 102, 0.5)",
+								animation: {
+									onProgress: GraphOnProgress,
+								},
+							},
+							{
+								label: "Result (Income - Spend)",
+								data: budgetSummaries
+									.map(
+										(item) =>
+											item.summaryDetailList.find(
+												(x) => x.order === -3
+											)?.value ?? 0
+									)
+									.reverse(),
+								borderColor: "rgb(255, 153, 102)",
+								backgroundColor: "rgba(255, 153, 102)",
+								animation: {
+									onProgress: GraphOnProgress,
 								},
 							},
 						],
@@ -138,7 +164,7 @@ const SummaryPage = () => {
 							},
 							title: {
 								display: true,
-								text: "Monthly Total Price (Aylık Toplam Tutar)",
+								text: "Monthly Income-Spend (Aylık Gelir-Harcama)",
 							},
 						},
 					}}
