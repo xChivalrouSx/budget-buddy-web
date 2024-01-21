@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BbCollection {
 	BUDGET("budget"),
-	USER("user");
+	USER("user"),
+	TAG("tag");
 
 	private final String name;
 }

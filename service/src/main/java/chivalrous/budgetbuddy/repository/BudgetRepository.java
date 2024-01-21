@@ -25,8 +25,6 @@ public class BudgetRepository {
 		try {
 			Firestore db = FirestoreClient.getFirestore();
 			ApiFuture<QuerySnapshot> future = db.collection(BbCollection.BUDGET.getName()).whereEqualTo("period", period).whereEqualTo("userId", userId).get();
-
-			future = db.collection(BbCollection.BUDGET.getName()).whereEqualTo("period", period).whereEqualTo("userId", userId).get();
 			if (future.get().getDocuments().isEmpty()) {
 				return new ArrayList<>();
 			}
