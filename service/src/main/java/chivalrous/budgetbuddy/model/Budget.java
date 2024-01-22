@@ -1,9 +1,11 @@
 package chivalrous.budgetbuddy.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -40,13 +42,15 @@ public class Budget {
 	private String bank;
 	private boolean income;
 
-	public static Budget fromSingleImportDTO(BudgetSingleImportRequest budgetDocumentSingleImportRequest, User user) {
+	public static Budget fromSingleImportDTO(BudgetSingleImportRequest budgetDocumentSingleImportRequest, User user, List<Tag> tagList) {
 		Budget budget = new Budget();
 		SingleImportDTO singleImportDTO = budgetDocumentSingleImportRequest.getSingleImportDTO();
 
 		budget.setDate(singleImportDTO.getDate());
 		budget.setStoreName(singleImportDTO.getDescription());
+
 		budget.setTags(singleImportDTO.getTags());
+		updateBudgetTagList(budget, tagList);
 
 		budget.setIncome(budgetDocumentSingleImportRequest.isIncome());
 		budget.setPrice(singleImportDTO.getPrice());
@@ -67,7 +71,8 @@ public class Budget {
 		return budget;
 	}
 
-	public static Budget fromEnparaPdfStringList(int index, String budgetLine, BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
+	public static Budget fromEnparaPdfStringList(int index, String budgetLine, BudgetDocumentImportRequest budgetDocumentImportRequest, User user,
+			List<Tag> tagList) {
 		Budget budget = new Budget();
 		budget.setIncome(false);
 
@@ -118,12 +123,13 @@ public class Budget {
 			}
 		}
 
+		updateBudgetTagList(budget, tagList);
 		setBudgetGeneralInfo(index, user.getId(), budget, budgetDocumentImportRequest);
 		return budget;
 	}
 
 	public static Budget fromWorldCardExcelStringList(int index, List<String> excelStringList,
-			BudgetDocumentImportRequest budgetDocumentImportRequest, User user) {
+			BudgetDocumentImportRequest budgetDocumentImportRequest, User user, List<Tag> tagList) {
 		Budget budget = new Budget();
 		budget.setIncome(false);
 
@@ -185,6 +191,7 @@ public class Budget {
 			throw new BbServiceException(ErrorMessage.DOCUMENT_FORMAT_NOT_VALID);
 		}
 
+		updateBudgetTagList(budget, tagList);
 		setBudgetGeneralInfo(index, user.getId(), budget, budgetDocumentImportRequest);
 		return budget;
 	}
@@ -215,6 +222,17 @@ public class Budget {
 			return 0.0;
 		}
 		return Double.valueOf(value.replace(replaceValue, replacementValue));
+	}
+
+	private static void updateBudgetTagList(Budget budget, List<Tag> tagList) {
+		if (io.jsonwebtoken.lang.Collections.isEmpty(budget.getTags())) {
+			budget.setTags(new ArrayList<>());
+		}
+
+		budget.getTags().addAll(tagList.stream()
+				.filter(p -> p.getStoreNameKeywords().stream().anyMatch(budget.getStoreName()::contains))
+				.map(p -> p.getTag())
+				.collect(Collectors.toList()));
 	}
 
 }

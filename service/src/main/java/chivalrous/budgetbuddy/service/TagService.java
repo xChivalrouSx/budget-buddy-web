@@ -1,5 +1,7 @@
 package chivalrous.budgetbuddy.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import chivalrous.budgetbuddy.dto.request.TagAutoRequest;
@@ -19,11 +21,14 @@ public class TagService {
 		User user = userService.getAuthenticatedUser();
 		Tag tmpTag = Tag.fromTagAutoRequest(tagAutoRequest, user.getId());
 
-		Tag tagDbResult = tagRepository.getTagWithUser(tmpTag.getTag(), user.getId());
+		Tag tagDbResult = tagRepository.findByUserAndTag(tmpTag.getTag(), user.getId());
 		if (tagDbResult != null) {
 			tmpTag.getStoreNameKeywords().addAll(tagDbResult.getStoreNameKeywords());
 		}
 		tagRepository.saveOrUpdateTag(tmpTag);
 	}
 
+	public List<Tag> getTags(String userId) {
+		return tagRepository.findByUser(userId);
+	}
 }

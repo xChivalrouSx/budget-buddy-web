@@ -22,6 +22,7 @@ import chivalrous.budgetbuddy.dto.request.BudgetDocumentImportRequest;
 import chivalrous.budgetbuddy.dto.request.BudgetSingleImportRequest;
 import chivalrous.budgetbuddy.exception.BbServiceException;
 import chivalrous.budgetbuddy.model.Budget;
+import chivalrous.budgetbuddy.model.Tag;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.BudgetDocumentRepository;
 import chivalrous.budgetbuddy.util.DateUtil;
@@ -36,10 +37,13 @@ public class BudgetDocumentService {
 
 	private final BudgetDocumentRepository budgetDocumentRepository;
 	private final UserService userService;
+	private final TagService tagService;
 
 	public void getBudget(BudgetSingleImportRequest budgetDocumentSingleImportRequest) {
 		User currentUser = userService.getAuthenticatedUser();
-		Budget budget = Budget.fromSingleImportDTO(budgetDocumentSingleImportRequest, currentUser);
+		List<Tag> tagList = tagService.getTags(currentUser.getId());
+
+		Budget budget = Budget.fromSingleImportDTO(budgetDocumentSingleImportRequest, currentUser, tagList);
 		budgetDocumentRepository.saveBudget(budget);
 	}
 
@@ -100,10 +104,12 @@ public class BudgetDocumentService {
 			User currentUser = userService.getAuthenticatedUser();
 			data.values().removeIf(x -> x.get(0).equals("") && x.get(1).equals(""));
 
+			List<Tag> tagList = tagService.getTags(currentUser.getId());
+
 			int index = 0;
 			List<Budget> budgetData = new ArrayList<>();
 			for (List<String> dataItems : data.values()) {
-				budgetData.add(Budget.fromWorldCardExcelStringList(index++, dataItems, budgetDocumentImportRequest, currentUser));
+				budgetData.add(Budget.fromWorldCardExcelStringList(index++, dataItems, budgetDocumentImportRequest, currentUser, tagList));
 			}
 			return budgetData;
 		} catch (Exception e) {
@@ -115,11 +121,12 @@ public class BudgetDocumentService {
 	public List<Budget> getBudgetFromEnparaPDF(BudgetDocumentImportRequest budgetDocumentImportRequest) {
 		List<String> lines = getLinesFromEnparaPdf(budgetDocumentImportRequest.getFile());
 		User currentUser = userService.getAuthenticatedUser();
+		List<Tag> tagList = tagService.getTags(currentUser.getId());
 
 		int index = 0;
 		List<Budget> budgetData = new ArrayList<>();
 		for (String line : lines) {
-			budgetData.add(Budget.fromEnparaPdfStringList(index++, line, budgetDocumentImportRequest, currentUser));
+			budgetData.add(Budget.fromEnparaPdfStringList(index++, line, budgetDocumentImportRequest, currentUser, tagList));
 		}
 		return budgetData;
 	}
@@ -185,4 +192,5 @@ public class BudgetDocumentService {
 
 		return lastStepLines;
 	}
+
 }
