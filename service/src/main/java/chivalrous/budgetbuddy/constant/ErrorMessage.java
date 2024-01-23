@@ -17,6 +17,7 @@ public enum ErrorMessage {
 	FIREBASE_COULD_NOT_INITIALIZE("101", "Error while connecting to google services."),
 	FIREBASE_DATA_COULD_NOT_GET("102", "Error while getting data."),
 	FIREBASE_DATA_TAG_COULD_NOT_GET("102.1", "Error while getting data."),
+	FIREBASE_DATA_BUDGET_COULD_NOT_GET("102.2", "Error while getting data."),
 	FIREBASE_DATA_COULD_NOT_DELETE("103", "Error while deleting data."),
 	DATE_CANNOT_PARSE("201", "Improper date format."),
 	FILE_COULD_NOT_READ("301", "Document could not read."),

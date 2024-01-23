@@ -1,6 +1,7 @@
 package chivalrous.budgetbuddy.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,13 @@ public class TagService {
 		if (tagDbResult != null) {
 			tmpTag.getStoreNameKeywords().addAll(tagDbResult.getStoreNameKeywords());
 		}
+
+		tmpTag.setStoreNameKeywords(tmpTag.getStoreNameKeywords().stream().distinct().collect(Collectors.toList()));
 		tagRepository.saveOrUpdateTag(tmpTag);
+	}
+
+	public void deleteAutoTag(String tag) {
+		tagRepository.deleteTag(tag);
 	}
 
 	public List<Tag> getTags(String userId) {

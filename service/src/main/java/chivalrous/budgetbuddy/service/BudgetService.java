@@ -1,6 +1,7 @@
 package chivalrous.budgetbuddy.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import chivalrous.budgetbuddy.dto.BudgetSummaryDetailDTO;
+import chivalrous.budgetbuddy.dto.request.TagRequest;
 import chivalrous.budgetbuddy.dto.response.BudgetDetailResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetGroupStoreTypeResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetResponse;
@@ -24,6 +26,28 @@ public class BudgetService {
 
 	private final BudgetRepository budgetRepository;
 	private final UserService userService;
+
+	public void addTagToBudget(TagRequest addTagRequest) {
+		Budget budget = budgetRepository.findById(addTagRequest.getBudgetId());
+
+		if (budget.getTags() == null) {
+			budget.setTags(Arrays.asList(addTagRequest.getTag()));
+		} else if (!budget.getTags().contains(addTagRequest.getTag())) {
+			budget.getTags().add(addTagRequest.getTag());
+		}
+
+		budgetRepository.saveOrUpdateBudget(budget);
+	}
+
+	public void removeTagFromBudget(TagRequest removeTagRequest) {
+		Budget budget = budgetRepository.findById(removeTagRequest.getBudgetId());
+
+		if (budget.getTags() != null) {
+			budget.getTags().remove(removeTagRequest.getTag());
+		}
+
+		budgetRepository.saveOrUpdateBudget(budget);
+	}
 
 	public List<BudgetResponse> getBudgetsByPeriod(String period) {
 		User user = userService.getAuthenticatedUser();
@@ -129,4 +153,5 @@ public class BudgetService {
 		}
 		return budgetDetailResponse;
 	}
+
 }

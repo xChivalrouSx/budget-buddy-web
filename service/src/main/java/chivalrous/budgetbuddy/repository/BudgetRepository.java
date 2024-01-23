@@ -11,6 +11,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.SetOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
 import chivalrous.budgetbuddy.constant.BbCollection;
@@ -31,7 +32,7 @@ public class BudgetRepository {
 			return future.get().getDocuments().stream().map(p -> p.toObject(Budget.class)).collect(Collectors.toList());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_GET, e);
+			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_BUDGET_COULD_NOT_GET, e);
 		}
 	}
 
@@ -48,9 +49,28 @@ public class BudgetRepository {
 					.collect(Collectors.toList());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_GET, e);
+			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_BUDGET_COULD_NOT_GET, e);
 		}
 
+	}
+
+	public Budget findById(String id) {
+		try {
+			Firestore db = FirestoreClient.getFirestore();
+			ApiFuture<QuerySnapshot> future = db.collection(BbCollection.BUDGET.getName()).whereEqualTo("id", id).get();
+			if (future.get().getDocuments().isEmpty()) {
+				return null;
+			}
+			return future.get().getDocuments().stream().map(p -> p.toObject(Budget.class)).findFirst().orElse(null);
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_BUDGET_COULD_NOT_GET, e);
+		}
+	}
+
+	public void saveOrUpdateBudget(Budget budget) {
+		Firestore db = FirestoreClient.getFirestore();
+		db.collection(BbCollection.BUDGET.getName()).document(budget.getId()).set(budget, SetOptions.merge());
 	}
 
 }

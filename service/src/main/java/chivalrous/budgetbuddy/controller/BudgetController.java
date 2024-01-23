@@ -3,15 +3,19 @@ package chivalrous.budgetbuddy.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import chivalrous.budgetbuddy.dto.request.BudgetsRequest;
+import chivalrous.budgetbuddy.dto.request.TagRequest;
 import chivalrous.budgetbuddy.dto.response.BudgetDetailResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetResponse;
 import chivalrous.budgetbuddy.dto.response.BudgetSummaryResponse;
+import chivalrous.budgetbuddy.dto.response.SuccessResponse;
 import chivalrous.budgetbuddy.service.BudgetService;
 import chivalrous.budgetbuddy.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +57,18 @@ public class BudgetController {
 		String period = DateUtil.getBudgetPeriod(year, month);
 		BudgetDetailResponse budgetSummaryResponse = budgetService.getBudgetDetailByPeriod(period);
 		return ResponseEntity.ok().body(budgetSummaryResponse);
+	}
+
+	@PutMapping("/budget/add-tag")
+	public ResponseEntity<SuccessResponse> addTag(@RequestBody TagRequest addTagRequest) {
+		budgetService.addTagToBudget(addTagRequest);
+		return ResponseEntity.ok().body(new SuccessResponse("Tag added."));
+	}
+
+	@DeleteMapping("/budget/remove-tag")
+	public ResponseEntity<SuccessResponse> removeTagFromBudget(@RequestBody TagRequest removeTagRequest) {
+		budgetService.removeTagFromBudget(removeTagRequest);
+		return ResponseEntity.ok().body(new SuccessResponse("Tag removed."));
 	}
 
 }

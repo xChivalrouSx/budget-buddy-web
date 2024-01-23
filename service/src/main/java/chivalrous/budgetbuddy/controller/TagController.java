@@ -2,6 +2,8 @@ package chivalrous.budgetbuddy.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,6 +22,12 @@ public class TagController {
 	public ResponseEntity<SuccessResponse> addAutoTag(@RequestBody TagAutoRequest tagAutoRequest) {
 		tagService.addAutoTag(tagAutoRequest);
 		return ResponseEntity.ok().body(new SuccessResponse("Auto tag added."));
+	}
+
+	@DeleteMapping("/tag/{tag}")
+	public ResponseEntity<SuccessResponse> deleteAutoTag(@PathVariable String tag) {
+		tagService.deleteAutoTag(tag);
+		return ResponseEntity.ok().body(new SuccessResponse("Auto tag deleted."));
 	}
 
 }
