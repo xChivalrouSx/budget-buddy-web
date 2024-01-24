@@ -24,3 +24,14 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ---
 
+
+### Images
+
+<p float="left">
+  <img src="./app-images/image-000.png" alt="Image - 1" width="600"/> 
+</p>
+
+<p float="left">
+  <img src="./app-images/image-001.png" alt="Image - 2" width="300"/> 
+  <img src="./app-images/image-002.png" alt="Image - 3" width="300"/>
+</p>

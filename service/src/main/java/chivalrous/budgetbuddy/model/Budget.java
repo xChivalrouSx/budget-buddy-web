@@ -228,6 +228,9 @@ public class Budget {
 		if (io.jsonwebtoken.lang.Collections.isEmpty(budget.getTags())) {
 			budget.setTags(new ArrayList<>());
 		}
+		if (io.jsonwebtoken.lang.Collections.isEmpty(tagList)) {
+			tagList = new ArrayList<>();
+		}
 
 		budget.getTags().addAll(tagList.stream()
 				.filter(p -> p.getStoreNameKeywords().stream().anyMatch(budget.getStoreName()::contains))
