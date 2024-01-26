@@ -35,6 +35,10 @@ public class TagService {
 		tagRepository.deleteTag(tag);
 	}
 
+	public void deleteAutoTagKeyword(String tag, String keyword) {
+		tagRepository.deleteTagKeyword(tag, keyword);
+	}
+
 	public List<Tag> getTags(String userId) {
 		return tagRepository.findByUser(userId);
 	}

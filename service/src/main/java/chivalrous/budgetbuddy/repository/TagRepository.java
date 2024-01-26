@@ -62,7 +62,24 @@ public class TagRepository {
 			Thread.currentThread().interrupt();
 			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_DELETE, e);
 		}
+	}
 
+	public void deleteTagKeyword(String tag, String keyword) {
+		try {
+			Firestore db = FirestoreClient.getFirestore();
+			ApiFuture<QuerySnapshot> future = db.collection(BbCollection.TAG.getName()).whereEqualTo("tag", tag).get();
+			if (future.get().getDocuments().size() == 1) {
+				List<Tag> tagList = future.get().getDocuments().stream().map(p -> p.toObject(Tag.class)).collect(Collectors.toList());
+				Tag currentTag = tagList.stream().findFirst().orElseGet(null);
+				if (currentTag != null) {
+					currentTag.getStoreNameKeywords().remove(keyword);
+					saveOrUpdateTag(currentTag);
+				}
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new FirebaseException(ErrorMessage.FIREBASE_DATA_COULD_NOT_DELETE, e);
+		}
 	}
 
 }

@@ -30,4 +30,10 @@ public class TagController {
 		return ResponseEntity.ok().body(new SuccessResponse("Auto tag deleted."));
 	}
 
+	@DeleteMapping("/tag/{tag}/{keyword}")
+	public ResponseEntity<SuccessResponse> deleteAutoTagKeyword(@PathVariable String tag, @PathVariable String keyword) {
+		tagService.deleteAutoTagKeyword(tag, keyword);
+		return ResponseEntity.ok().body(new SuccessResponse("Auto tag keyword deleted."));
+	}
+
 }
