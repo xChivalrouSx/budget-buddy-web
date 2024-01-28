@@ -18,3 +18,9 @@ export interface SingleImportDTO {
 	price: number;
 	description: string;
 }
+
+export interface TagAutoRequest {
+	tag: string;
+	storeType: string;
+	storeNameKeywords: string[];
+}

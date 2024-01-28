@@ -11,6 +11,7 @@ import {
 	BudgetDocumentImportRequest,
 	BudgetSingleImportRequest,
 	SingleImportDTO,
+	TagAutoRequest,
 } from "../../dto/request/BudgetDocumentImportRequest";
 import { SuccessResponse } from "../../dto/response/SuccessResponse";
 import api from "../../utils/Api";
@@ -19,6 +20,7 @@ import { getPeriodAsString } from "../../utils/DateFunctions";
 import ButtonBb from "../ButtonBb";
 import CalenderBb from "../CalenderBb";
 import CheckBoxBb from "../CheckboxBb/CheckboxBb";
+import ChipsBb from "../ChipsBb";
 import InputNumberBb from "../InputNumberBb";
 import InputTextBb from "../InputTextBb";
 import styles from "./TopBar.module.css";
@@ -46,6 +48,12 @@ const FormikForBudgetInitialValues = {
 	income: false as boolean,
 };
 
+const FormikForAutoTagInitialValues = {
+	tag: "",
+	storeType: "",
+	storeNameKeywords: [],
+};
+
 const TopBar = () => {
 	const menuRight = useRef(null);
 	const location = useLocation();
@@ -53,20 +61,21 @@ const TopBar = () => {
 
 	const [showAddDocumentDialog, setShowAddDocumentDialog] = useState(false);
 	const [showAddBudgetDialog, setShowAddBudgetDialog] = useState(false);
+	const [showAddAutoTagDialog, setShowAddAutoTagDialog] = useState(false);
 
 	const innerMenuItems = [
 		{
-			label: "Import",
+			label: "Budget",
 			items: [
 				{
-					label: "Import Document",
+					label: "Import from File",
 					icon: "pi pi-fw pi-plus",
 					command: () => {
 						setShowAddDocumentDialog(true);
 					},
 				},
 				{
-					label: "Import Budget",
+					label: "Import Single",
 					icon: "pi pi-fw pi-plus",
 					command: () => {
 						setShowAddBudgetDialog(true);
@@ -74,12 +83,19 @@ const TopBar = () => {
 				},
 			],
 		},
+		{
+			label: "Tag",
+			items: [
+				{
+					label: "Add Auto Tag",
+					icon: "pi pi-fw pi-plus",
+					command: () => {
+						setShowAddAutoTagDialog(true);
+					},
+				},
+			],
+		},
 	];
-
-	// const location = useLocation()
-	// const [{ route }] = matchRoutes(routes, location)
-
-	// return route.path
 
 	const formikForDocument = useFormik({
 		initialValues: FormikForDocumentInitialValues,
@@ -124,6 +140,23 @@ const TopBar = () => {
 					formikForBudget.values.year,
 					formikForBudget.values.month
 				);
+			});
+		},
+	});
+
+	const formikForAutoTag = useFormik({
+		initialValues: FormikForAutoTagInitialValues,
+		validationSchema: undefined,
+		validateOnBlur: true,
+		validateOnChange: true,
+		onSubmit: () => {
+			api.post("/tag/auto", {
+				tag: formikForAutoTag.values.tag,
+				storeType: formikForAutoTag.values.storeType,
+				storeNameKeywords: formikForAutoTag.values.storeNameKeywords,
+			} as TagAutoRequest).then((response: SuccessResponse) => {
+				setShowAddAutoTagDialog(false);
+				formikForAutoTag.setValues(FormikForAutoTagInitialValues);
 			});
 		},
 	});
@@ -369,6 +402,74 @@ const TopBar = () => {
 							type="button"
 							onClick={() => {
 								formikForBudget.submitForm();
+							}}
+						/>
+					</div>
+				</form>
+			</Dialog>
+
+			<Dialog
+				header="Add Auto Tag"
+				visible={showAddAutoTagDialog}
+				style={{ width: "20vw" }}
+				onHide={() => setShowAddAutoTagDialog(false)}
+			>
+				<form onSubmit={formikForAutoTag.handleSubmit}>
+					<div className="mt-5">
+						<InputTextBb
+							fullwidth
+							id="tag"
+							name="tag"
+							label="Tag"
+							onChange={formikForAutoTag.handleChange}
+							value={formikForAutoTag.values.tag.toString()}
+							error={
+								formikForAutoTag.touched.tag &&
+								Boolean(formikForAutoTag.errors.tag)
+							}
+							errorHelperText={formikForAutoTag.errors.tag}
+							className="block"
+						/>
+					</div>
+					<div className="mt-5">
+						<InputTextBb
+							fullwidth
+							id="storeType"
+							name="storeType"
+							label="Store Type"
+							onChange={formikForAutoTag.handleChange}
+							value={formikForAutoTag.values.storeType.toString()}
+							error={
+								formikForAutoTag.touched.storeType &&
+								Boolean(formikForAutoTag.errors.storeType)
+							}
+							errorHelperText={formikForAutoTag.errors.storeType}
+							className="block"
+						/>
+					</div>
+					<div className="mt-5">
+						<ChipsBb
+							fullwidth
+							id="storeNameKeywords"
+							name="storeNameKeywords"
+							label="Store Name Keywords For Tag"
+							onChange={formikForAutoTag.handleChange}
+							value={formikForAutoTag.values.storeNameKeywords}
+							error={
+								formikForAutoTag.touched.storeNameKeywords &&
+								Boolean(formikForAutoTag.errors.storeNameKeywords)
+							}
+							// errorHelperText={formikForAutoTag.errors.storeNameKeywords}
+							className="block"
+						/>
+					</div>
+					<div className="mt-5">
+						<ButtonBb
+							fullwidth
+							label={"ADD AUTO TAG"}
+							type="button"
+							onClick={() => {
+								formikForAutoTag.submitForm();
 							}}
 						/>
 					</div>
