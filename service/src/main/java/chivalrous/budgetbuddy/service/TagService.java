@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import chivalrous.budgetbuddy.dto.request.TagAutoRequest;
+import chivalrous.budgetbuddy.dto.response.TagAutoResponse;
 import chivalrous.budgetbuddy.model.Tag;
 import chivalrous.budgetbuddy.model.User;
 import chivalrous.budgetbuddy.repository.TagRepository;
@@ -17,6 +18,11 @@ public class TagService {
 
 	private final TagRepository tagRepository;
 	private final UserService userService;
+
+	public List<TagAutoResponse> getAutoTags() {
+		User user = userService.getAuthenticatedUser();
+		return getTags(user.getId()).stream().map(TagAutoResponse::fromTag).collect(Collectors.toList());
+	}
 
 	public void addAutoTag(TagAutoRequest tagAutoRequest) {
 		User user = userService.getAuthenticatedUser();
