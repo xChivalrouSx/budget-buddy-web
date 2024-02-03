@@ -17,6 +17,7 @@ export interface SingleImportDTO {
 	date: Date;
 	price: number;
 	description: string;
+	tags: string[];
 }
 
 export interface TagAutoRequest {

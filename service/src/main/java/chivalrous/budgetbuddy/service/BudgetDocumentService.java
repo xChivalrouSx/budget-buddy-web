@@ -126,7 +126,9 @@ public class BudgetDocumentService {
 		int index = 0;
 		List<Budget> budgetData = new ArrayList<>();
 		for (String line : lines) {
-			budgetData.add(Budget.fromEnparaPdfStringList(index++, line, budgetDocumentImportRequest, currentUser, tagList));
+			if (!line.contains("Ödeme - Enpara.com Cep Şubesi")) {
+				budgetData.add(Budget.fromEnparaPdfStringList(index++, line, budgetDocumentImportRequest, currentUser, tagList));
+			}
 		}
 		return budgetData;
 	}

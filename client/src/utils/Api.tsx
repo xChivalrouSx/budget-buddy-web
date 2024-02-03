@@ -48,20 +48,14 @@ const api = {
 	},
 
 	postMultipart<T = any>(url: string, data: any) {
-		instance.interceptors.request.use((config: any) => {
-			config.headers["Content-Type"] = "multipart/form-data";
-			return config;
-		});
 		return instance
-			.post<T>(url, data)
+			.post<T>(url, data, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
 			.then((response) => {
 				return response.data;
-			})
-			.finally(() => {
-				instance.interceptors.request.use((config: any) => {
-					config.headers["Content-Type"] = "application/json";
-					return config;
-				});
 			});
 	},
 

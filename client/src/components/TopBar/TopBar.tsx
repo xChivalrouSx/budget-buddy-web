@@ -133,6 +133,7 @@ const TopBar = () => {
 					date: formikForBudget.values.date,
 					price: formikForBudget.values.price,
 					description: formikForBudget.values.description,
+					tags: [],
 				} as SingleImportDTO,
 			} as BudgetSingleImportRequest).then((response: SuccessResponse) => {
 				setShowAddBudgetDialog(false);
